@@ -8,13 +8,13 @@ Apache license, version 2.0 (Apache-2.0 license)
 """
 
 __author__ = "4-proxy"
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 
 import unittest
 
 from settings_dto import PoolSettingsDTO
 
-from typing import Dict, Any
+from typing import Dict, Any, Tuple
 
 
 # _____________________________________________________________________________
@@ -93,3 +93,82 @@ class PositiveTestPoolSettingsDTO(unittest.TestCase):
         # Check
         self.assertTrue(expr=is_frozen,
                         msg="Failure! The inspected dataclass is not frozen!")
+
+
+# _____________________________________________________________________________
+class NegativeTestPoolSettingsDTO(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls) -> None:
+        super().setUpClass()
+        cls._tested_class = PoolSettingsDTO
+
+        cls._valid_pool_parameters: Dict[str, Any] = {
+            "pool_name": "TestPool",
+            "pool_size": 5,
+            "pool_reset_session": True,
+        }
+
+    # -------------------------------------------------------------------------
+    def _check_invalid_field_value_type_raise_TypeError(self,
+                                                        field_name: str,
+                                                        invalid_value: Any) -> None:
+        # Build
+        test_class = self._tested_class
+        test_pool_params: Dict[str, Any] = self._valid_pool_parameters.copy()
+        test_pool_params[field_name] = invalid_value
+
+        # Check
+        with self.assertRaises(expected_exception=TypeError):
+            # Operate
+            test_class(**test_pool_params)
+
+    # -------------------------------------------------------------------------
+    def _check_invalid_field_value_raise_ValueError(self,
+                                                    field_name: str,
+                                                    invalid_value: Any) -> None:
+        # Build
+        test_class = self._tested_class
+        test_pool_params: Dict[str, Any] = self._valid_pool_parameters.copy()
+        test_pool_params[field_name] = invalid_value
+
+        # Check
+        with self.assertRaises(expected_exception=ValueError):
+            # Operate
+            test_class(**test_pool_params)
+
+    # -------------------------------------------------------------------------
+    def test_invalid_type_of_pool_name_raise_TypeError(self) -> None:
+        self._check_invalid_field_value_type_raise_TypeError(field_name="pool_name",
+                                                             invalid_value=1234)
+
+    # -------------------------------------------------------------------------
+    def test_invalid_type_of_pool_size_raise_TypeError(self) -> None:
+        self._check_invalid_field_value_type_raise_TypeError(field_name="pool_size",
+                                                             invalid_value="5")
+
+    # -------------------------------------------------------------------------
+    def test_invalid_type_of_pool_reset_session_raise_TypeError(self) -> None:
+        self._check_invalid_field_value_type_raise_TypeError(field_name="pool_reset_session",
+                                                             invalid_value="True")
+
+    # -------------------------------------------------------------------------
+    def test_invalid_value_of_pool_name_raise_ValueError(self) -> None:
+        # Build
+        invalid_values: Tuple[str, ...] = "", " ", "      "
+
+        # Check
+        for test_value in invalid_values:
+            with self.subTest(pattern=test_value):
+                self._check_invalid_field_value_raise_ValueError(field_name="pool_name",
+                                                                 invalid_value=test_value)
+
+    # -------------------------------------------------------------------------
+    def test_invalid_value_of_pool_size_raise_ValueError(self) -> None:
+        # Build
+        invalid_values: Tuple[int, ...] = 0, -1, -10
+
+        # Check
+        for test_value in invalid_values:
+            with self.subTest(pattern=test_value):
+                self._check_invalid_field_value_raise_ValueError(field_name="pool_size",
+                                                                 invalid_value=test_value)

@@ -12,12 +12,13 @@ __all__: list[str] = [
 ]
 
 __author__ = "4-proxy"
-__version__ = "0.2.0"
+__version__ = "0.3.0"
 
 
 from dataclasses import dataclass
 
 
+# _____________________________________________________________________________
 @dataclass(frozen=True)
 class PoolSettingsDTO:
     pool_reset_session: bool
@@ -39,3 +40,13 @@ class PoolSettingsDTO:
 
         if self.pool_size <= 0:
             raise ValueError("The pool_size value cannot be <= 0!")
+
+        elif self.pool_size > 32:
+            raise ValueError(
+                "MySQL limits! The pool_size value cannot be > 32!"
+            )
+
+        if len(self.pool_name) > 64:
+            raise ValueError(
+                "MySQL limits! The length of pool_name value cannot be > 64!"
+            )

@@ -12,25 +12,30 @@ __all__: list[str] = [
 ]
 
 __author__ = "4-proxy"
-__version__ = "0.1.1"
+__version__ = "0.2.0"
 
+from mysql.connector.pooling import MySQLConnectionPool
 
 from settings_dto import PoolSettingsDTO
 
+from typing import Any
 from database_types.exceptions import *
-
-from typing import NoReturn, Optional, Any
 
 
 # _____________________________________________________________________________
 class MySQLDataBase:
-    def __init__(self, pool_settings: PoolSettingsDTO) -> None:
+    def __init__(self, pool_settings: PoolSettingsDTO, **dbconfig: Any) -> None:
         self.__is_instance_PoolSettingsDTO(inspected_obj=pool_settings)
 
         self._pool_settings: PoolSettingsDTO = pool_settings
 
     # =========================================================================
-    def __is_instance_PoolSettingsDTO(self,
-                                      inspected_obj: Any) -> Optional[NoReturn]:
+    def __is_instance_PoolSettingsDTO(self, inspected_obj: Any) -> None:
         if not isinstance(inspected_obj, PoolSettingsDTO):
             raise IsNotPoolSettingsDTO()
+
+    # -------------------------------------------------------------------------
+    def create_connection_pool(self) -> MySQLConnectionPool:
+        pool = MySQLConnectionPool()
+
+        return pool

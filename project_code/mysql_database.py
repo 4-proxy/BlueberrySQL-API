@@ -12,7 +12,7 @@ __all__: list[str] = [
 ]
 
 __author__ = "4-proxy"
-__version__ = "0.2.0"
+__version__ = "0.3.0"
 
 from mysql.connector.pooling import MySQLConnectionPool
 
@@ -35,7 +35,14 @@ class MySQLDataBase:
             raise IsNotPoolSettingsDTO()
 
     # -------------------------------------------------------------------------
-    def create_connection_pool(self) -> MySQLConnectionPool:
-        pool = MySQLConnectionPool()
+    def create_pool(self) -> MySQLConnectionPool:
+        name: str = self._pool_settings.pool_name
+        size: int = self._pool_settings.pool_size
+        reset_session: bool = self._pool_settings.pool_reset_session
+
+        pool = MySQLConnectionPool(pool_name=name,
+                                   pool_size=size,
+                                   pool_reset_session=reset_session
+                                   )
 
         return pool

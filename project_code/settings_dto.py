@@ -8,7 +8,7 @@ Apache license, version 2.0 (Apache-2.0 license)
 """
 
 __all__: list[str] = [
-    "PoolSettingsDTO"
+    "PoolConfigDTO"
 ]
 
 __author__ = "4-proxy"
@@ -20,7 +20,7 @@ from dataclasses import dataclass
 
 # _____________________________________________________________________________
 @dataclass(frozen=True)
-class PoolSettingsDTO:
+class PoolConfigDTO:
     pool_reset_session: bool
     pool_size: int
     pool_name: str

@@ -8,13 +8,13 @@ Apache license, version 2.0 (Apache-2.0 license)
 """
 
 __author__ = "4-proxy"
-__version__ = "0.3.0"
+__version__ = "0.4.0"
 
 import unittest
 
 from mysql.connector.pooling import CNX_POOL_MAXSIZE, CNX_POOL_MAXNAMESIZE
 
-from settings_dto import PoolSettingsDTO
+from settings_dto import PoolConfigDTO
 
 from typing import Dict, Any, Tuple
 
@@ -24,11 +24,11 @@ MYSQL_POOL_NAME_SIZE_LIMIT: int = CNX_POOL_MAXNAMESIZE
 
 
 # _____________________________________________________________________________
-class PositiveTestPoolSettingsDTO(unittest.TestCase):
+class PositiveTestPoolConfigDTO(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         super().setUpClass()
-        cls._tested_class = PoolSettingsDTO
+        cls._tested_class = PoolConfigDTO
 
         cls._expected_pool_params: Dict[str, type] = {
             "pool_name": str,
@@ -104,11 +104,11 @@ class PositiveTestPoolSettingsDTO(unittest.TestCase):
 
 
 # _____________________________________________________________________________
-class NegativeTestPoolSettingsDTO(unittest.TestCase):
+class NegativeTestPoolConfigDTO(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         super().setUpClass()
-        cls._tested_class = PoolSettingsDTO
+        cls._tested_class = PoolConfigDTO
 
         cls._valid_pool_params: Dict[str, Any] = {
             "pool_name": "TestPool",
@@ -117,47 +117,39 @@ class NegativeTestPoolSettingsDTO(unittest.TestCase):
         }
 
     # -------------------------------------------------------------------------
-    def _check_invalid_field_value_type_raise_TypeError(self,
-                                                        field_name: str,
-                                                        invalid_value: Any) -> None:
+    def _check_invalid_field_value_raise_expected_Exception(self,
+                                                            field_name: str,
+                                                            invalid_value: Any,
+                                                            expected_exception: type) -> None:
         # Build
         test_class = self._tested_class
         test_pool_params: Dict[str, Any] = self._valid_pool_params.copy()
+
+        # Change valid field value to invalid for test
         test_pool_params[field_name] = invalid_value
 
         # Check
-        with self.assertRaises(expected_exception=TypeError):
-            # Operate
-            test_class(**test_pool_params)
-
-    # -------------------------------------------------------------------------
-    def _check_invalid_field_value_raise_ValueError(self,
-                                                    field_name: str,
-                                                    invalid_value: Any) -> None:
-        # Build
-        test_class = self._tested_class
-        test_pool_params: Dict[str, Any] = self._valid_pool_params.copy()
-        test_pool_params[field_name] = invalid_value
-
-        # Check
-        with self.assertRaises(expected_exception=ValueError):
+        with self.assertRaises(expected_exception=expected_exception):
             # Operate
             test_class(**test_pool_params)
 
     # -------------------------------------------------------------------------
     def test_invalid_type_of_pool_name_raise_TypeError(self) -> None:
-        self._check_invalid_field_value_type_raise_TypeError(field_name="pool_name",
-                                                             invalid_value=1234)
+        self._check_invalid_field_value_raise_expected_Exception(field_name="pool_name",
+                                                                 invalid_value=1234,
+                                                                 expected_exception=TypeError)
 
     # -------------------------------------------------------------------------
     def test_invalid_type_of_pool_size_raise_TypeError(self) -> None:
-        self._check_invalid_field_value_type_raise_TypeError(field_name="pool_size",
-                                                             invalid_value="5")
+        self._check_invalid_field_value_raise_expected_Exception(field_name="pool_size",
+                                                                 invalid_value="5",
+                                                                 expected_exception=TypeError)
 
     # -------------------------------------------------------------------------
     def test_invalid_type_of_pool_reset_session_raise_TypeError(self) -> None:
-        self._check_invalid_field_value_type_raise_TypeError(field_name="pool_reset_session",
-                                                             invalid_value="True")
+        self._check_invalid_field_value_raise_expected_Exception(field_name="pool_reset_session",
+                                                                 invalid_value="True",
+                                                                 expected_exception=TypeError)
 
     # -------------------------------------------------------------------------
     def test_invalid_value_of_pool_name_raise_ValueError(self) -> None:
@@ -167,8 +159,9 @@ class NegativeTestPoolSettingsDTO(unittest.TestCase):
         # Check
         for test_value in invalid_values:
             with self.subTest(pattern=test_value):
-                self._check_invalid_field_value_raise_ValueError(field_name="pool_name",
-                                                                 invalid_value=test_value)
+                self._check_invalid_field_value_raise_expected_Exception(field_name="pool_name",
+                                                                         invalid_value=test_value,
+                                                                         expected_exception=ValueError)
 
     # -------------------------------------------------------------------------
     def test_invalid_value_of_pool_size_raise_ValueError(self) -> None:
@@ -178,8 +171,9 @@ class NegativeTestPoolSettingsDTO(unittest.TestCase):
         # Check
         for test_value in invalid_values:
             with self.subTest(pattern=test_value):
-                self._check_invalid_field_value_raise_ValueError(field_name="pool_size",
-                                                                 invalid_value=test_value)
+                self._check_invalid_field_value_raise_expected_Exception(field_name="pool_size",
+                                                                         invalid_value=test_value,
+                                                                         expected_exception=ValueError)
 
     # -------------------------------------------------------------------------
     @unittest.skipIf(condition=(MYSQL_POOL_SIZE_LIMIT != 32),
@@ -191,8 +185,9 @@ class NegativeTestPoolSettingsDTO(unittest.TestCase):
         # Check
         for test_value in invalid_values:
             with self.subTest(pattern=test_value):
-                self._check_invalid_field_value_raise_ValueError(field_name="pool_size",
-                                                                 invalid_value=test_value)
+                self._check_invalid_field_value_raise_expected_Exception(field_name="pool_size",
+                                                                         invalid_value=test_value,
+                                                                         expected_exception=ValueError)
 
     # -------------------------------------------------------------------------
     @unittest.skipIf(condition=(MYSQL_POOL_NAME_SIZE_LIMIT != 64),
@@ -204,5 +199,6 @@ class NegativeTestPoolSettingsDTO(unittest.TestCase):
         # Check
         for test_value in invalid_values:
             with self.subTest(pattern=test_value):
-                self._check_invalid_field_value_raise_ValueError(field_name="pool_name",
-                                                                 invalid_value=test_value)
+                self._check_invalid_field_value_raise_expected_Exception(field_name="pool_name",
+                                                                         invalid_value=test_value,
+                                                                         expected_exception=ValueError)

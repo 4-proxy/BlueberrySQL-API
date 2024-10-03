@@ -12,37 +12,38 @@ __all__: list[str] = [
 ]
 
 __author__ = "4-proxy"
-__version__ = "0.3.0"
+__version__ = "0.4.0"
 
 from mysql.connector.pooling import MySQLConnectionPool
 
-from settings_dto import PoolSettingsDTO
+from settings_dto import PoolConfigDTO
 
-from typing import Any
+from typing import Any, Dict
 from database_types.exceptions import *
 
 
 # _____________________________________________________________________________
 class MySQLDataBase:
-    def __init__(self, pool_settings: PoolSettingsDTO, **dbconfig: Any) -> None:
-        self.__is_instance_PoolSettingsDTO(inspected_obj=pool_settings)
+    def __init__(self, pool_config: PoolConfigDTO, **dbconfig: Any) -> None:
+        self.__is_instance_PoolConfigDTO(inspected_obj=pool_config)
 
-        self._pool_settings: PoolSettingsDTO = pool_settings
+        self._pool_config: PoolConfigDTO = pool_config
+        self._dbconfig: Dict[str, Any] = dbconfig
 
     # =========================================================================
-    def __is_instance_PoolSettingsDTO(self, inspected_obj: Any) -> None:
-        if not isinstance(inspected_obj, PoolSettingsDTO):
-            raise IsNotPoolSettingsDTO()
+    def __is_instance_PoolConfigDTO(self, inspected_obj: Any) -> None:
+        if not isinstance(inspected_obj, PoolConfigDTO):
+            raise IsNotPoolConfigDTO()
 
     # -------------------------------------------------------------------------
     def create_pool(self) -> MySQLConnectionPool:
-        name: str = self._pool_settings.pool_name
-        size: int = self._pool_settings.pool_size
-        reset_session: bool = self._pool_settings.pool_reset_session
+        name: str = self._pool_config.pool_name
+        size: int = self._pool_config.pool_size
+        reset_session: bool = self._pool_config.pool_reset_session
 
         pool = MySQLConnectionPool(pool_name=name,
                                    pool_size=size,
-                                   pool_reset_session=reset_session
-                                   )
+                                   pool_reset_session=reset_session,
+                                   **self._dbconfig)
 
         return pool

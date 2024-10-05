@@ -12,9 +12,9 @@ __all__: list[str] = [
 ]
 
 __author__ = "4-proxy"
-__version__ = "0.4.0"
+__version__ = "0.5.0"
 
-from mysql.connector.pooling import MySQLConnectionPool
+from mysql.connector.pooling import MySQLConnectionPool, PooledMySQLConnection
 
 from settings_dto import PoolConfigDTO
 
@@ -30,13 +30,15 @@ class MySQLDataBase:
         self._pool_config: PoolConfigDTO = pool_config
         self._dbconfig: Dict[str, Any] = dbconfig
 
+        self._pool: MySQLConnectionPool = self.create_connection_pool()
+
     # =========================================================================
     def __is_instance_PoolConfigDTO(self, inspected_obj: Any) -> None:
         if not isinstance(inspected_obj, PoolConfigDTO):
             raise IsNotPoolConfigDTO()
 
     # -------------------------------------------------------------------------
-    def create_pool(self) -> MySQLConnectionPool:
+    def create_connection_pool(self) -> MySQLConnectionPool:
         name: str = self._pool_config.pool_name
         size: int = self._pool_config.pool_size
         reset_session: bool = self._pool_config.pool_reset_session
@@ -47,3 +49,11 @@ class MySQLDataBase:
                                    **self._dbconfig)
 
         return pool
+
+    # -------------------------------------------------------------------------
+    def get_connection_from_pool(self) -> PooledMySQLConnection:
+        pool: MySQLConnectionPool = self._pool
+
+        connection: PooledMySQLConnection = pool.get_connection()
+
+        return connection

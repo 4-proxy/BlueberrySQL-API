@@ -1,0 +1,10 @@
+`db_connection_config.py` - Example 1.
+
+Example 1:
+```
+connection_config = {
+    "database": "TestDB",
+    "user": "Bob",
+    "password": "1234qwerty",
+}
+```

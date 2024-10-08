@@ -8,7 +8,7 @@ Apache license, version 2.0 (Apache-2.0 license)
 """
 
 __author__ = "4-proxy"
-__version__ = "0.6.0"
+__version__ = "0.6.1"
 
 
 import unittest
@@ -285,7 +285,7 @@ class TestMySQLDataBaseNegative(unittest.TestCase):
             test_class(test_data)  # type: ignore
 
         # Check
-        present_exception_msg = str(object=ctx.exception)
+        present_exception_msg = str(ctx.exception)
 
         self.assertEqual(
             first=present_exception_msg,

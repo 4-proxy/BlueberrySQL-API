@@ -12,7 +12,7 @@ __all__: list[str] = [
 ]
 
 __author__ = "4-proxy"
-__version__ = "0.6.0"
+__version__ = "0.7.0"
 
 
 from mysql.connector.pooling import MySQLConnectionPool, PooledMySQLConnection
@@ -29,8 +29,7 @@ class MySQLDataBase:
         self._dbconfig: Dict[str, Any] = dbconfig
         self._pool: MySQLConnectionPool = self.create_connection_pool()
 
-    def _set_pool_config(self,
-                         pool_config: PoolConfigDTO) -> None:
+    def _set_pool_config(self, pool_config: PoolConfigDTO) -> None:
         if not isinstance(pool_config, PoolConfigDTO):
             raise AttributeError(
                 "Pool config must be an instance of `PoolConfigDTO`! "
@@ -58,3 +57,59 @@ class MySQLDataBase:
         connection: PooledMySQLConnection = pool.get_connection()
 
         return connection
+
+    def __repr__(self) -> str:
+        from string import Template
+        from textwrap import dedent
+
+        raw_template = Template(
+            """
+            MySQL server Info:
+                Version: $server_version
+                Host: $server_host
+                Port: $server_port
+                Time Zone: $server_time_zone
+
+            Connection Info:
+                User: $connection_user
+                Database Name: $connection_database_name
+            """
+        )
+
+        server_info: Dict[str, str] = self._get_info_about_server()
+        connection_info: Dict[str, str] = self._get_info_about_connection()
+
+        fill_template: str = raw_template.safe_substitute(**server_info,
+                                                          **connection_info)
+
+        final_template: str = dedent(text=fill_template)
+
+        return final_template
+
+    def _get_info_about_server(self) -> Dict[str, str]:
+        with self.get_connection_from_pool() as connection:
+            version: str = connection.get_server_info()
+            host: str = connection.server_host
+            port: int = connection.server_port
+            time_zone: str = connection.time_zone
+
+            server_info: Dict[str, str] = {
+                "server_version": version,
+                "server_host": host,
+                "server_port": str(port),
+                "server_time_zone": time_zone,
+            }
+
+        return server_info
+
+    def _get_info_about_connection(self) -> Dict[str, str]:
+        with self.get_connection_from_pool() as connection:
+            user: str = connection.user
+            database_name: str = connection.database
+
+            connection_info: Dict[str, str] = {
+                "connection_user": user,
+                "connection_database_name": database_name,
+            }
+
+        return connection_info

@@ -8,7 +8,7 @@ Apache license, version 2.0 (Apache-2.0 license)
 """
 
 __author__ = "4-proxy"
-__version__ = "0.6.1"
+__version__ = "0.7.0"
 
 
 import unittest
@@ -25,10 +25,13 @@ from unittest.mock import MagicMock
 from mysql.connector.pooling import MySQLConnectionPool, PooledMySQLConnection
 from _collections_abc import dict_items
 
+# Logical flags for tests
+TEST_FLAG_MYSQL_SERVER_IS_ON = True
 
+# Custom types
 MockPoolConfigDTO: TypeAlias = MagicMock
 
-
+# Auxiliary data
 valid_params_PoolConfigDTO: Dict[str, Any] = {
     "pool_name": "Test-Pool",
     "pool_size": 5,
@@ -36,17 +39,10 @@ valid_params_PoolConfigDTO: Dict[str, Any] = {
 }
 
 
+# ______________________________________________________________________________________________________________________
 class TestMySQLDataBasePositive(unittest.TestCase):
-    @classmethod
-    def setUpClass(cls) -> None:
-        super().setUpClass()
-        cls._tested_class = tested_class
-
-    def setUp(self) -> None:
-        super().setUp()
-        self._mock_pool_config: MockPoolConfigDTO = self._create_mock_PoolConfigDTO()
-
-    def _create_mock_PoolConfigDTO(self) -> MockPoolConfigDTO:
+    @staticmethod
+    def create_mock_PoolConfigDTO() -> MockPoolConfigDTO:
         mock = MagicMock(spec=PoolConfigDTO)
 
         mock.pool_name = valid_params_PoolConfigDTO["pool_name"]
@@ -55,9 +51,22 @@ class TestMySQLDataBasePositive(unittest.TestCase):
 
         return mock
 
-    def test_constructor_accepts_PoolConfigDTO(self) -> None:
-        self._tested_class(self._mock_pool_config)
+    # ------------------------------------------------------------------------------------------------------------------
+    @classmethod
+    def setUpClass(cls) -> None:
+        super().setUpClass()
+        cls._tested_class = tested_class
 
+    # ------------------------------------------------------------------------------------------------------------------
+    def setUp(self) -> None:
+        super().setUp()
+        self.mock_pool_config: MockPoolConfigDTO = self.create_mock_PoolConfigDTO()
+
+    # ------------------------------------------------------------------------------------------------------------------
+    def test_constructor_accepts_PoolConfigDTO(self) -> None:
+        self._tested_class(self.mock_pool_config)
+
+    # ------------------------------------------------------------------------------------------------------------------
     def test_pool_config_field_is_instance_of_PoolConfigDTO(self) -> None:
         # Build
         expected_field_name = '_pool_config'
@@ -65,7 +74,7 @@ class TestMySQLDataBasePositive(unittest.TestCase):
         test_class = self._tested_class
 
         # Operate
-        test_instance = test_class(self._mock_pool_config)
+        test_instance = test_class(self.mock_pool_config)
 
         # Check
         present_field_data: PoolConfigDTO = getattr(test_instance, expected_field_name)
@@ -76,6 +85,7 @@ class TestMySQLDataBasePositive(unittest.TestCase):
             msg=f"Failure! Inspected field: {present_field_data} - is not instance of {expected_type}!"
         )
 
+    # ------------------------------------------------------------------------------------------------------------------
     @UnitMock.patch.object(target=tested_class,
                            attribute='create_connection_pool', autospec=True)
     def test_constructor_stores_additional_kwargs_in_dbconfig_field(self, _) -> None:
@@ -90,7 +100,7 @@ class TestMySQLDataBasePositive(unittest.TestCase):
         }
 
         # Operate
-        test_instance = test_class(self._mock_pool_config,
+        test_instance = test_class(self.mock_pool_config,
                                    **test_data)
 
         # Check
@@ -102,6 +112,7 @@ class TestMySQLDataBasePositive(unittest.TestCase):
             msg=f"Failure! The data of expected field: {expected_field_name} - do not match the test data!"
         )
 
+    # ------------------------------------------------------------------------------------------------------------------
     @UnitMock.patch.object(target=tested_module,
                            attribute='MySQLConnectionPool', autospec=True)
     def test_create_connection_pool_returns_MySQLConnectionPool(self, _) -> None:
@@ -110,7 +121,7 @@ class TestMySQLDataBasePositive(unittest.TestCase):
         test_class = self._tested_class
 
         # Operate
-        test_instance = test_class(self._mock_pool_config)
+        test_instance = test_class(self.mock_pool_config)
 
         test_obj: MySQLConnectionPool = test_instance.create_connection_pool()
 
@@ -121,9 +132,10 @@ class TestMySQLDataBasePositive(unittest.TestCase):
             msg=f"Failure! Inspected object: {test_obj} - is not instance of {expected_type}!"
         )
 
+    # ------------------------------------------------------------------------------------------------------------------
     def test_create_connection_pool_returns_configured_MySQLConnectionPool_with_pool_config(self) -> None:
         # Build
-        test_pool_config: MockPoolConfigDTO = self._mock_pool_config
+        test_pool_config: MockPoolConfigDTO = self.mock_pool_config
         test_class = self._tested_class
 
         # MySQLConnectionPool attribute names
@@ -163,6 +175,7 @@ class TestMySQLDataBasePositive(unittest.TestCase):
                     msg=f"Failure! Inspected attr: {expected_attr} - has an invalid value!"
                 )
 
+    # ------------------------------------------------------------------------------------------------------------------
     @UnitMock.patch.object(target=tested_module,
                            attribute='MySQLConnectionPool', autospec=True)
     def test_create_connection_pool_returns_configured_MySQLConnectionPool_with_dbconfig(self,
@@ -177,7 +190,7 @@ class TestMySQLDataBasePositive(unittest.TestCase):
         }
 
         # Operate
-        test_instance = test_class(self._mock_pool_config,
+        test_instance = test_class(self.mock_pool_config,
                                    **test_dbconfig)
 
         test_instance.create_connection_pool()
@@ -194,6 +207,7 @@ class TestMySQLDataBasePositive(unittest.TestCase):
                 msg=f"Failure! Expected kwarg: {expected_pair} - not found in call arguments!"
             )
 
+    # ------------------------------------------------------------------------------------------------------------------
     @UnitMock.patch.object(target=tested_class,
                            attribute='create_connection_pool', autospec=True)
     @UnitMock.patch.object(target=tested_module,
@@ -206,10 +220,10 @@ class TestMySQLDataBasePositive(unittest.TestCase):
         expected_field_data_type = MySQLConnectionPool
         test_class = self._tested_class
 
-        mock_create_connection_pool.return_value = MockMySQLConnectionPool()
+        mock_create_connection_pool.return_value = MockMySQLConnectionPool
 
         # Operate
-        test_instance = test_class(self._mock_pool_config)
+        test_instance = test_class(self.mock_pool_config)
 
         present_field_data: MySQLConnectionPool = getattr(test_instance, expected_field_name)
 
@@ -222,6 +236,7 @@ class TestMySQLDataBasePositive(unittest.TestCase):
             msg=f"Failure! Inspected field: {expected_field_name} - data type does not match with {expected_field_data_type}!"
         )
 
+    # ------------------------------------------------------------------------------------------------------------------
     @UnitMock.patch.object(target=tested_module.MySQLConnectionPool,
                            attribute='get_connection', autospec=True)
     @UnitMock.patch.object(target=tested_module,
@@ -236,7 +251,7 @@ class TestMySQLDataBasePositive(unittest.TestCase):
         mock_get_connection.return_value = MockPooledMySQLConnection
 
         # Operate
-        test_instance = test_class(self._mock_pool_config)
+        test_instance = test_class(self.mock_pool_config)
 
         test_obj: PooledMySQLConnection = test_instance.get_connection_from_pool()
 
@@ -247,12 +262,14 @@ class TestMySQLDataBasePositive(unittest.TestCase):
             msg=f"Failure! Inspected object: {test_obj} - is not instance of {expected_type}!"
         )
 
+    # ------------------------------------------------------------------------------------------------------------------
+    @unittest.skipUnless(condition=TEST_FLAG_MYSQL_SERVER_IS_ON, reason="MySQL server is off.")
     def test_get_connection_from_pool_returns_valid_connection_to_database(self) -> None:
         # Build
         test_class = self._tested_class
 
         # Operate
-        test_instance = test_class(self._mock_pool_config,
+        test_instance = test_class(self.mock_pool_config,
                                    **DB_CONNECTION_CONFIG)
 
         test_obj: PooledMySQLConnection = test_instance.get_connection_from_pool()
@@ -261,18 +278,47 @@ class TestMySQLDataBasePositive(unittest.TestCase):
         self.assertTrue(expr=test_obj.is_connected(),
                         msg=f"Failure! The inspected connection: {test_obj} - is not connected!")
 
+    # ------------------------------------------------------------------------------------------------------------------
+    @UnitMock.patch.object(target=tested_module,
+                           attribute='MySQLConnectionPool', autospec=True)
+    @UnitMock.patch.object(target=tested_module.MySQLDataBase,
+                           attribute='create_connection_pool', autospec=True)
+    def test_change_dbconfig_for_connection_pool_uses_MySQLConnectionPool_set_config(self,
+                                                                                     mock_create_connection_pool: MagicMock,
+                                                                                     MockMySQLConnectionPool: MagicMock) -> None:
+        # Build
+        test_class = self._tested_class
 
+        mock_create_connection_pool.return_value = MockMySQLConnectionPool
+
+        test_dbconfig: Dict[str, Any] = {
+            "database": "PickleDB",
+            "user": "Rick",
+            "password": "MortyWheareYou",
+        }
+
+        # Operate
+        test_instance = test_class(self.mock_pool_config)
+
+        test_instance.change_dbconfig_for_connection_pool(new_dbconfig=test_dbconfig)
+
+        # Check
+        MockMySQLConnectionPool.set_config.assert_called_once_with(**test_dbconfig)
+
+
+# ______________________________________________________________________________________________________________________
 class TestMySQLDataBaseNegative(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         super().setUpClass()
         cls._tested_class = tested_class
 
+    # ------------------------------------------------------------------------------------------------------------------
     def test_set_pool_config_raises_AttributeError_when_not_PoolConfigDTO(self) -> None:
         # Build
         expected_exception = AttributeError
         expected_exception_msg: str = (
-            "Pool config must be an instance of `PoolConfigDTO`! "
+            "pool_config must be an instance of `PoolConfigDTO`! "
             f"Obtained instance: <class 'dict'>"
         )
         test_class = self._tested_class

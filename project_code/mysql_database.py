@@ -12,7 +12,7 @@ __all__: list[str] = [
 ]
 
 __author__ = "4-proxy"
-__version__ = "0.7.0"
+__version__ = "0.8.0"
 
 
 from mysql.connector.pooling import MySQLConnectionPool, PooledMySQLConnection
@@ -23,8 +23,7 @@ from typing import Any, Dict
 
 
 class MySQLDataBase:
-    def __init__(self,
-                 pool_config: PoolConfigDTO, **dbconfig: Any) -> None:
+    def __init__(self, pool_config: PoolConfigDTO, **dbconfig: Any) -> None:
         self._set_pool_config(pool_config=pool_config)
         self._dbconfig: Dict[str, Any] = dbconfig
         self._pool: MySQLConnectionPool = self.create_connection_pool()
@@ -32,7 +31,7 @@ class MySQLDataBase:
     def _set_pool_config(self, pool_config: PoolConfigDTO) -> None:
         if not isinstance(pool_config, PoolConfigDTO):
             raise AttributeError(
-                "Pool config must be an instance of `PoolConfigDTO`! "
+                "pool_config must be an instance of `PoolConfigDTO`! "
                 f"Obtained instance: {type(pool_config)}"
             )
         self._pool_config: PoolConfigDTO = pool_config
@@ -51,10 +50,11 @@ class MySQLDataBase:
 
         return pool
 
-    def get_connection_from_pool(self) -> PooledMySQLConnection:
-        pool: MySQLConnectionPool = self._pool
+    def change_dbconfig_for_connection_pool(self, new_dbconfig: Dict[str, Any]) -> None:
+        self._pool.set_config(**new_dbconfig)
 
-        connection: PooledMySQLConnection = pool.get_connection()
+    def get_connection_from_pool(self) -> PooledMySQLConnection:
+        connection: PooledMySQLConnection = self._pool.get_connection()
 
         return connection
 
@@ -72,15 +72,24 @@ class MySQLDataBase:
 
             Connection Info:
                 User: $connection_user
-                Database Name: $connection_database_name
+                Database: $connection_database
+
+            Pool Info:
+                Name: $pool_name
+                Size: $pool_size
+                Reset Session: $pool_reset_session
             """
         )
 
         server_info: Dict[str, str] = self._get_info_about_server()
         connection_info: Dict[str, str] = self._get_info_about_connection()
+        pool_info: Dict[str, str] = self._get_info_about_pool()
 
-        fill_template: str = raw_template.safe_substitute(**server_info,
-                                                          **connection_info)
+        fill_template: str = raw_template.safe_substitute(
+            **server_info,
+            **connection_info,
+            **pool_info
+        )
 
         final_template: str = dedent(text=fill_template)
 
@@ -109,7 +118,18 @@ class MySQLDataBase:
 
             connection_info: Dict[str, str] = {
                 "connection_user": user,
-                "connection_database_name": database_name,
+                "connection_database": database_name,
             }
 
         return connection_info
+
+    def _get_info_about_pool(self) -> Dict[str, str]:
+        pool: MySQLConnectionPool = self._pool
+
+        pool_info: Dict[str, str] = {
+            "pool_name": pool.pool_name,
+            "pool_size": str(pool.pool_size),
+            "pool_reset_session": str(pool.reset_session),
+        }
+
+        return pool_info

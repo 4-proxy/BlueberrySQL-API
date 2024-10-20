@@ -24,6 +24,7 @@ MYSQL_POOL_SIZE_LIMIT: int = CNX_POOL_MAXSIZE
 MYSQL_POOL_NAME_SIZE_LIMIT: int = CNX_POOL_MAXNAMESIZE
 
 
+# ______________________________________________________________________________________________________________________
 class PositiveTestPoolConfigDTO(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
@@ -36,6 +37,7 @@ class PositiveTestPoolConfigDTO(unittest.TestCase):
             "pool_reset_session": bool,
         }
 
+    # ------------------------------------------------------------------------------------------------------------------
     def test_class_is_dataclass(self) -> None:
         from dataclasses import is_dataclass
 
@@ -46,6 +48,7 @@ class PositiveTestPoolConfigDTO(unittest.TestCase):
         self.assertTrue(expr=_is_dataclass,
                         msg="Failure! The inspected class is not a dataclass!")
 
+    # ------------------------------------------------------------------------------------------------------------------
     def test_all_expected_fields_are_present(self) -> None:
         # Build
         expected_names: dict_keys[str, type] = self._expected_pool_params.keys()
@@ -63,6 +66,7 @@ class PositiveTestPoolConfigDTO(unittest.TestCase):
                     msg=f"Failure! Expected field: {expected_name} - is not present!"
                 )
 
+    # ------------------------------------------------------------------------------------------------------------------
     def test_present_field_types_match_expected(self) -> None:
         from dataclasses import Field
 
@@ -87,6 +91,7 @@ class PositiveTestPoolConfigDTO(unittest.TestCase):
                     msg=f"Failure! Expected type of inspected field: {present_field} - is not {expected_type}!"
                 )
 
+    # ------------------------------------------------------------------------------------------------------------------
     def test_dataclass_should_be_frozen(self) -> None:
         # Build
         test_class = self._tested_class
@@ -99,6 +104,7 @@ class PositiveTestPoolConfigDTO(unittest.TestCase):
                         msg="Failure! The inspected dataclass is not frozen!")
 
 
+# ______________________________________________________________________________________________________________________
 class NegativeTestPoolConfigDTO(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
@@ -111,6 +117,7 @@ class NegativeTestPoolConfigDTO(unittest.TestCase):
             "pool_reset_session": True,
         }
 
+    # ------------------------------------------------------------------------------------------------------------------
     def _check_invalid_field_value_raise_expected_exception(self,
                                                             field_name: str,
                                                             invalid_value: Any,
@@ -127,21 +134,25 @@ class NegativeTestPoolConfigDTO(unittest.TestCase):
             # Operate
             test_class(**test_pool_params)
 
+    # ------------------------------------------------------------------------------------------------------------------
     def test_invalid_type_of_pool_name_raise_TypeError(self) -> None:
         self._check_invalid_field_value_raise_expected_exception(
             field_name="pool_name", invalid_value=1234, expected_exception=TypeError
         )
 
+    # ------------------------------------------------------------------------------------------------------------------
     def test_invalid_type_of_pool_size_raise_TypeError(self) -> None:
         self._check_invalid_field_value_raise_expected_exception(
             field_name="pool_size", invalid_value="5", expected_exception=TypeError
         )
 
+    # ------------------------------------------------------------------------------------------------------------------
     def test_invalid_type_of_pool_reset_session_raise_TypeError(self) -> None:
         self._check_invalid_field_value_raise_expected_exception(
             field_name="pool_reset_session", invalid_value="True", expected_exception=TypeError
         )
 
+    # ------------------------------------------------------------------------------------------------------------------
     def test_invalid_value_of_pool_name_raise_ValueError(self) -> None:
         # Build
         invalid_values: Tuple[str, ...] = "", " ", "      "
@@ -153,6 +164,7 @@ class NegativeTestPoolConfigDTO(unittest.TestCase):
                     field_name="pool_name", invalid_value=test_value, expected_exception=ValueError
                 )
 
+    # ------------------------------------------------------------------------------------------------------------------
     def test_invalid_value_of_pool_size_raise_ValueError(self) -> None:
         # Build
         invalid_values: Tuple[int, ...] = 0, -1, -10
@@ -164,6 +176,7 @@ class NegativeTestPoolConfigDTO(unittest.TestCase):
                     field_name="pool_size", invalid_value=test_value, expected_exception=ValueError
                 )
 
+    # ------------------------------------------------------------------------------------------------------------------
     @unittest.skipIf(condition=MYSQL_POOL_SIZE_LIMIT != 32, reason="MySQL limits")
     def test_mysql_pool_size_max_limit_32(self) -> None:
         # Build
@@ -175,6 +188,7 @@ class NegativeTestPoolConfigDTO(unittest.TestCase):
                 self._check_invalid_field_value_raise_expected_exception(
                     field_name="pool_size", invalid_value=test_value, expected_exception=ValueError)
 
+    # ------------------------------------------------------------------------------------------------------------------
     @unittest.skipIf(condition=MYSQL_POOL_NAME_SIZE_LIMIT != 64, reason="MySQL limits")
     def test_mysql_pool_name_max_size_64(self) -> None:
         # Build

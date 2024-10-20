@@ -14,7 +14,6 @@ __all__: list[str] = [
 __author__ = "4-proxy"
 __version__ = "0.3.1"
 
-
 from dataclasses import dataclass
 
 
@@ -41,11 +40,7 @@ class PoolConfigDTO:
             raise ValueError("The pool_size value cannot be <= 0!")
 
         elif self.pool_size > 32:
-            raise ValueError(
-                "MySQL limits! The pool_size value cannot be > 32!"
-            )
+            raise ValueError("MySQL limits! The pool_size value cannot be > 32!")
 
         if len(self.pool_name) > 64:
-            raise ValueError(
-                "MySQL limits! The length of pool_name value cannot be > 64!"
-            )
+            raise ValueError("MySQL limits! The length of pool_name value cannot be > 64!")

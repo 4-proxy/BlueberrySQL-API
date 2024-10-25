@@ -15,15 +15,15 @@ import unittest
 import unittest.mock as UnitMock
 
 import mysql_database as tested_module
-
 from mysql_database import MySQLDataBase as tested_class
+
 from settings_dto import PoolConfigDTO
 from tests.test_data.db_connection_config import connection_config as DB_CONNECTION_CONFIG
 
-from typing import Any, Dict, Tuple, TypeAlias
 from unittest.mock import MagicMock
 from mysql.connector.pooling import MySQLConnectionPool, PooledMySQLConnection
 from _collections_abc import dict_items, dict_values
+from typing import Any, Dict, Tuple, TypeAlias
 
 # Logical flags for tests
 TEST_FLAG_MYSQL_SERVER_IS_ON = False

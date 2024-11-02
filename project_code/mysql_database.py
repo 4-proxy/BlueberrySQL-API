@@ -12,8 +12,7 @@ __all__: list[str] = [
 ]
 
 __author__ = "4-proxy"
-__version__ = "0.8.0"
-
+__version__ = "0.8.1"
 
 from mysql.connector.pooling import MySQLConnectionPool, PooledMySQLConnection
 
@@ -22,20 +21,22 @@ from settings_dto import PoolConfigDTO
 from typing import Any, Dict
 
 
+# ______________________________________________________________________________________________________________________
 class MySQLDataBase:
     def __init__(self, pool_config: PoolConfigDTO, **dbconfig: Any) -> None:
         self._set_pool_config(pool_config=pool_config)
         self._dbconfig: Dict[str, Any] = dbconfig
         self._pool: MySQLConnectionPool = self.create_connection_pool()
 
+    # ------------------------------------------------------------------------------------------------------------------
     def _set_pool_config(self, pool_config: PoolConfigDTO) -> None:
         if not isinstance(pool_config, PoolConfigDTO):
             raise AttributeError(
-                "pool_config must be an instance of `PoolConfigDTO`! "
-                f"Obtained instance: {type(pool_config)}"
+                f"pool_config must be an instance of `PoolConfigDTO`! Obtained instance: {type(pool_config)}"
             )
         self._pool_config: PoolConfigDTO = pool_config
 
+    # ------------------------------------------------------------------------------------------------------------------
     def create_connection_pool(self) -> MySQLConnectionPool:
         name: str = self._pool_config.pool_name
         size: int = self._pool_config.pool_size
@@ -50,14 +51,17 @@ class MySQLDataBase:
 
         return pool
 
+    # ------------------------------------------------------------------------------------------------------------------
     def change_dbconfig_for_connection_pool(self, new_dbconfig: Dict[str, Any]) -> None:
         self._pool.set_config(**new_dbconfig)
 
+    # ------------------------------------------------------------------------------------------------------------------
     def get_connection_from_pool(self) -> PooledMySQLConnection:
         connection: PooledMySQLConnection = self._pool.get_connection()
 
         return connection
 
+    # ==================================================================================================================
     def __repr__(self) -> str:
         from string import Template
         from textwrap import dedent
@@ -95,6 +99,7 @@ class MySQLDataBase:
 
         return final_template
 
+    # ------------------------------------------------------------------------------------------------------------------
     def _get_info_about_server(self) -> Dict[str, str]:
         with self.get_connection_from_pool() as connection:
             version: str = connection.get_server_info()
@@ -111,6 +116,7 @@ class MySQLDataBase:
 
         return server_info
 
+    # ------------------------------------------------------------------------------------------------------------------
     def _get_info_about_connection(self) -> Dict[str, str]:
         with self.get_connection_from_pool() as connection:
             user: str = connection.user
@@ -123,6 +129,7 @@ class MySQLDataBase:
 
         return connection_info
 
+    # ------------------------------------------------------------------------------------------------------------------
     def _get_info_about_pool(self) -> Dict[str, str]:
         pool: MySQLConnectionPool = self._pool
 

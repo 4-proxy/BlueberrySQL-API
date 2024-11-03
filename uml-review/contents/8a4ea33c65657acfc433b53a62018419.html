@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>PoolConfigDTO</title>
+    <title>MySQLPoolConfigDTO</title>
     <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,300italic,400italic,700italic|Source+Code+Pro:300,400,700' rel='stylesheet' type='text/css'>
 <link rel="stylesheet" href="../assets/css/bootstrap.css">
 <link rel="stylesheet" href="../assets/css/jquery.bonsai.css">
@@ -19,7 +19,7 @@
 
       <!-- Name Title -->
 
-      <h1>PoolConfigDTO</h1>
+      <h1>MySQLPoolConfigDTO</h1>
 
       <!-- Type and Stereotype -->
 
@@ -29,7 +29,7 @@
           UMLClass
         </span>
         
-          <span style="margin-left: 10px" class="alert alert-info">«dataclass(frozen=True)»</span>
+          <span style="margin-left: 10px" class="alert alert-info">«»</span>
         
       </section>
 
@@ -40,13 +40,19 @@
         
         
           
-          <span class="label label-info"><a href='cf9c8b720f3815adeccaf3ef6e48c6c4.html'><span class='node-icon staruml-icon icon-Project'></span>BlueberrySQL</a></span>
+          <span class="label label-info"><a href='cf9c8b720f3815adeccaf3ef6e48c6c4.html'><span class='node-icon staruml-icon icon-Project'></span>BlueberrySQL-API</a></span>
         
           <span>::</span>
           <span class="label label-info"><a href='221fefbb0400cf2a2e17dbb53643ca58.html'><span class='node-icon staruml-icon icon-UMLPackage'></span>project_code</a></span>
         
           <span>::</span>
-          <span class="label label-info"><a href='8a4ea33c65657acfc433b53a62018419.html'><span class='node-icon staruml-icon icon-UMLClass'></span>«dataclass(frozen=True)»PoolConfigDTO</a></span>
+          <span class="label label-info"><a href='c302c1309c423cde5e528c38b56696b3.html'><span class='node-icon staruml-icon icon-UMLPackage'></span>mysql</a></span>
+        
+          <span>::</span>
+          <span class="label label-info"><a href='3bdabe41601a9930d0ce60fdddd492a5.html'><span class='node-icon staruml-icon icon-UMLPackage'></span>config</a></span>
+        
+          <span>::</span>
+          <span class="label label-info"><a href='8a4ea33c65657acfc433b53a62018419.html'><span class='node-icon staruml-icon icon-UMLClass'></span>MySQLPoolConfigDTO</a></span>
         
       </section>
 
@@ -84,6 +90,15 @@
       
         
         
+<section class="element-list">
+    <h3>Generalized Elements</h3>
+    <ul class="nav nav-list">
+        
+        <li><a href='0041faf8fbbfb3fe4d84ea16fcfd2e6c.html'><span class='node-icon staruml-icon icon-UMLClass'></span>«dataclass(frozen=True)»PoolConfigDTO</a></li>
+        
+    </ul>
+</section>
+
 
 
         
@@ -134,61 +149,9 @@
       <!-- Attributes -->
 
       
-      <section>
-        <h3>Attributes</h3>
-        <table class="table table-striped table-bordered">
-          <tr>
-            <th>Visibility</th>
-            <th>Name</th>
-            <th>Type</th>
-            <th>Description</th>
-          </tr>
-          
-          <tr>
-            <td>public</td>
-            <td><a href="4eac60e4c0a8cc39d6b7d6d129bfe6d1.html">pool_name</a></td>
-            <td>str </td>
-            <td></td>
-          </tr>
-          
-          <tr>
-            <td>public</td>
-            <td><a href="47e57d68223d6b1e09c25da7918c5da5.html">pool_size</a></td>
-            <td>int </td>
-            <td></td>
-          </tr>
-          
-          <tr>
-            <td>public</td>
-            <td><a href="4fd6c309601a53c31aacd7c537b7ff71.html">pool_reset_session</a></td>
-            <td>bool </td>
-            <td></td>
-          </tr>
-          
-        </table>
-      </section>
-      
 
       <!-- Operations -->
 
-      
-      <section>
-        <h3>Operations</h3>
-        <table class="table table-striped table-bordered">
-          <tr>
-            <th>Visibility</th>
-            <th>Name</th>
-            <th>Description</th>
-          </tr>
-          
-          <tr>
-            <td>public</td>
-            <td><a href="0930f3cfe0e46306f4bfb346c2800483.html">__post_init__()</a></td>
-            <td></td>
-          </tr>
-          
-        </table>
-      </section>
       
 
       <!-- Receptions -->
@@ -287,7 +250,7 @@
     
     <tr>
         <td>name</td>
-        <td>PoolConfigDTO</td>
+        <td>MySQLPoolConfigDTO</td>
     </tr>
     
     
@@ -302,7 +265,7 @@
     
     <tr>
         <td>stereotype</td>
-        <td>dataclass(frozen=True)</td>
+        <td></td>
     </tr>
     
     
@@ -394,9 +357,11 @@
     <h3>Relationships</h3>
     <ul class="nav nav-list">
         
-        <li><a href='95044871ac118346084f20e9bd89ac12.html'><span class='node-icon staruml-icon icon-UMLAssociation'></span>(PoolConfigDTO—MySQLDataBasePool)</a></li>
+        <li><a href='95044871ac118346084f20e9bd89ac12.html'><span class='node-icon staruml-icon icon-UMLAssociation'></span>(MySQLPoolConfigDTO—MySQLDataBasePool)</a></li>
         
-        <li><a href='4b2264e35b52c23fea5501e7767c1003.html'><span class='node-icon staruml-icon icon-UMLAssociation'></span>(MySQLDataBasePool—PoolConfigDTO)</a></li>
+        <li><a href='61a2361076796dfd5f510ead98129080.html'><span class='node-icon staruml-icon icon-UMLAssociation'></span>(MySQLDataBasePool—MySQLPoolConfigDTO)</a></li>
+        
+        <li><a href='f98c0ce2f4e626c07c00d4d8e8b92e96.html'><span class='node-icon staruml-icon icon-UMLGeneralization'></span>(MySQLPoolConfigDTO→PoolConfigDTO)</a></li>
         
     </ul>
 </section>
@@ -411,7 +376,9 @@
     <h3>Owned Elements</h3>
     <ul class="nav nav-list">
         
-        <li><a href='95044871ac118346084f20e9bd89ac12.html'><span class='node-icon staruml-icon icon-UMLAssociation'></span>(PoolConfigDTO—MySQLDataBasePool)</a></li>
+        <li><a href='95044871ac118346084f20e9bd89ac12.html'><span class='node-icon staruml-icon icon-UMLAssociation'></span>(MySQLPoolConfigDTO—MySQLDataBasePool)</a></li>
+        
+        <li><a href='f98c0ce2f4e626c07c00d4d8e8b92e96.html'><span class='node-icon staruml-icon icon-UMLGeneralization'></span>(MySQLPoolConfigDTO→PoolConfigDTO)</a></li>
         
     </ul>
 </section>

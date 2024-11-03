@@ -18,7 +18,7 @@ Python framework to provide APIs for working with SQL databases such as - MySQL,
 
 ### External references
 
-- <https://github.com/4-proxy/NekoShop> - Official project repository;  
+- <https://github.com/4-proxy/BlueberrySQL-API> - Official project repository;  
 - <https://www.mysql.com/> - Official website **MySQL**;  
 - <https://www.deviantart.com/4-proxy/art/BlueberrySQL-API-logo-1117527319> - Published version of the logo/preview;  
 

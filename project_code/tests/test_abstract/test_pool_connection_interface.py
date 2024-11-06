@@ -8,29 +8,28 @@ Apache license, version 2.0 (Apache-2.0 license)
 """
 
 __author__ = "4-proxy"
-__version__ = "0.1.1"
+__version__ = "0.1.0"
 
 import unittest
 
 import inspect
 
-from abstract.api.sql_api_interface import SQLAPIInterface as tested_class
+from abstract.database.pool_connection_interface import PoolConnectionInterface as tested_class
 
-from inspect import Signature, Parameter
-from typing import Any, Callable, List, Tuple
+from inspect import Parameter, Signature
+from typing import List, Callable, Any, Tuple
 
 
 # ______________________________________________________________________________________________________________________
-class TestSQLAPIInterface(unittest.TestCase):
+class TestPoolConnectionInterface(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         super().setUpClass()
         cls._tested_class = tested_class
 
         cls._expected_contracts_of_interface: List[str] = [
-            'execute_query_no_returns',
-            'execute_query_returns_one',
-            'execute_query_returns_all',
+            'create_connection_pool',
+            'get_connection_from_pool',
         ]
 
     # ------------------------------------------------------------------------------------------------------------------
@@ -76,33 +75,21 @@ class TestSQLAPIInterface(unittest.TestCase):
                 self.assertTrue(expr=method.__isabstractmethod__)  # type: ignore
 
     # ------------------------------------------------------------------------------------------------------------------
-    def test_interface_contracts_signature_compliance(self) -> None:
+    def test_create_connection_pool_signature_compliance(self) -> None:
         # Build
         interface = self._tested_class
-        contracts: List[str] = self._expected_contracts_of_interface
+        contract_name = 'create_connection_pool'
 
-        expected_signatures: List[Tuple[str, Any]] = [
-            ('sql_query', Parameter.POSITIONAL_OR_KEYWORD),
-            ('query_data', Parameter.VAR_POSITIONAL),
-        ]  # parameter name, parameter kind
+        expected_signature: Tuple[str, Any] = ('dbconfig', Parameter.VAR_KEYWORD)
+
+        # Operate
+        method: Callable[..., Any] = getattr(interface, contract_name)
+        signature: Signature = inspect.signature(obj=method)
+        params = list(signature.parameters.values())
 
         # Check
-        for contract in contracts:
-            with self.subTest(msg=f"Signature of inspected contract: {contract} - not as expected!"):
-                # Build
-                method: Callable[..., Any] = getattr(interface, contract)
-                signature: Signature = inspect.signature(obj=method)
-                params = list(signature.parameters.values())
+        inspected_param: Parameter = params[1]
+        actual_signature: Tuple[str, Any] = (inspected_param.name, inspected_param.kind)
 
-                # Operate
-                first_param: Parameter = params[1]
-                second_param: Parameter = params[2]
-
-                actual_signatures: List[Tuple[str, Any]] = [
-                    (first_param.name, first_param.kind),
-                    (second_param.name, second_param.kind),
-                ]  # parameter name, parameter kind
-
-                # Check
-                self.assertEqual(first=expected_signatures,
-                                 second=actual_signatures)
+        self.assertEqual(first=expected_signature,
+                         second=actual_signature)

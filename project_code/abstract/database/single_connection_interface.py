@@ -8,29 +8,22 @@ Apache license, version 2.0 (Apache-2.0 license)
 """
 
 __all__: list[str] = [
-    'SQLAPIInterface',
+    'SingleConnectionInterface',
 ]
 
 __author__ = "4-proxy"
-__version__ = "0.1.1"
+__version__ = "0.1.0"
 
 from abc import ABC, abstractmethod
 
-from typing import Any, Iterable
-
 
 # ______________________________________________________________________________________________________________________
-class SQLAPIInterface(ABC):
+class SingleConnectionInterface[ConnectionType](ABC):
     @abstractmethod
-    def execute_query_no_returns(self, sql_query: str, *query_data) -> None:
+    def create_connection_with_database(self, **dbconfig) -> ConnectionType:
         pass
 
     # ------------------------------------------------------------------------------------------------------------------
     @abstractmethod
-    def execute_query_returns_one(self, sql_query: str, *query_data) -> Any:
-        pass
-
-    # ------------------------------------------------------------------------------------------------------------------
-    @abstractmethod
-    def execute_query_returns_all(self, sql_query: str, *query_data) -> Iterable[Any]:
+    def get_connection_with_database(self) -> ConnectionType:
         pass

@@ -8,7 +8,7 @@ Apache license, version 2.0 (Apache-2.0 license)
 """
 
 __author__ = "4-proxy"
-__version__ = "0.1.1"
+__version__ = "0.1.2"
 
 import unittest
 
@@ -58,7 +58,7 @@ class TestSQLAPIInterface(unittest.TestCase):
         for expected_contract in expected_contracts:
             with self.subTest(msg=f"Inspected interface don't have expected contract: {expected_contract}!"):
                 # Operate
-                getattr(interface, expected_contract)
+                self.assertTrue(expr=hasattr(interface, expected_contract))
 
     # ------------------------------------------------------------------------------------------------------------------
     def test_everyone_expected_contract_is_abstractmethod(self) -> None:

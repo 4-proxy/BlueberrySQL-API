@@ -8,16 +8,16 @@ Apache license, version 2.0 (Apache-2.0 license)
 """
 
 __author__ = "4-proxy"
-__version__ = "0.1.1"
+__version__ = "0.2.0"
 
 import unittest
 
-import inspect
+from project_code.tests.test_abstract.abstract_test_inspector import AbstractTestInspector
 
 from abstract.database.single_connection_interface import SingleConnectionInterface as tested_class
 
-from inspect import Parameter, Signature
-from typing import List, Callable, Any, Tuple
+from inspect import Parameter
+from typing import List, Any, Tuple
 
 
 # ______________________________________________________________________________________________________________________
@@ -34,18 +34,7 @@ class TestSingleConnectionInterface(unittest.TestCase):
 
     # ------------------------------------------------------------------------------------------------------------------
     def test_class_is_abstract_of_ABC(self) -> None:
-        """
-        Python allows you to create an instance of an abstract class if it has no methods.
-        Hence the check via inheritance.
-        """
-        from abc import ABC
-
-        # Build
-        _class = self._tested_class
-
-        # Check
-        self.assertTrue(expr=issubclass(_class, ABC),
-                        msg=f"Failure! Inspected class: {_class} - is not abstract of {ABC}!")
+        AbstractTestInspector.check_inspected_class_is_abstract_of_ABC(_class=self._tested_class)
 
     # ------------------------------------------------------------------------------------------------------------------
     def test_interface_has_expected_contracts(self) -> None:
@@ -55,9 +44,9 @@ class TestSingleConnectionInterface(unittest.TestCase):
 
         # Check
         for expected_contract in expected_contracts:
-            with self.subTest(msg=f"Inspected interface don't have expected contract: {expected_contract}!"):
-                # Operate
-                self.assertTrue(expr=hasattr(interface, expected_contract))
+            with self.subTest(msg=f"Inspected interface don't have expected contract: *{expected_contract}*!"):
+                AbstractTestInspector.check_inspected_class_has_expected_method(_class=interface,
+                                                                                method_name=expected_contract)
 
     # ------------------------------------------------------------------------------------------------------------------
     def test_everyone_expected_contract_is_abstractmethod(self) -> None:
@@ -67,12 +56,9 @@ class TestSingleConnectionInterface(unittest.TestCase):
 
         # Check
         for expected_contract in expected_contracts:
-            with self.subTest(msg=f"Expected contract: {expected_contract} of {interface} - is not abstractmethod!"):
-                # Build
-                method: Callable[..., Any] = getattr(interface, expected_contract)
-
-                # Check
-                self.assertTrue(expr=method.__isabstractmethod__)  # type: ignore
+            with self.subTest(msg=f"Expected contract: *{expected_contract}* of *{interface}* - is not abstractmethod!"):
+                AbstractTestInspector.check_inspected_method_is_abstractmethod(_class=interface,
+                                                                               method_name=expected_contract)
 
     # ------------------------------------------------------------------------------------------------------------------
     def test_create_connection_with_database_signature_compliance(self) -> None:
@@ -80,16 +66,14 @@ class TestSingleConnectionInterface(unittest.TestCase):
         interface = self._tested_class
         contract_name = 'create_connection_with_database'
 
-        expected_signature: Tuple[str, Any] = ('dbconfig', Parameter.VAR_KEYWORD)
-
-        # Operate
-        method: Callable[..., Any] = getattr(interface, contract_name)
-        signature: Signature = inspect.signature(obj=method)
-        params = list(signature.parameters.values())
+        expected_signature_list: List[Tuple[str, Any]] = [
+            ('self', Parameter.POSITIONAL_OR_KEYWORD),
+            ('dbconfig', Parameter.VAR_KEYWORD),
+        ]
 
         # Check
-        inspected_param: Parameter = params[1]
-        actual_signature: Tuple[str, Any] = (inspected_param.name, inspected_param.kind)
-
-        self.assertEqual(first=expected_signature,
-                         second=actual_signature)
+        AbstractTestInspector.check_inspected_method_signature_is_compliance(
+            _class=interface,
+            method_name=contract_name,
+            expected_signature_list=expected_signature_list
+        )

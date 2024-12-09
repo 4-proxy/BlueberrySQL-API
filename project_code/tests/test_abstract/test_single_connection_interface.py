@@ -8,11 +8,11 @@ Apache license, version 2.0 (Apache-2.0 license)
 """
 
 __author__ = "4-proxy"
-__version__ = "0.2.0"
+__version__ = "0.2.1"
 
 import unittest
 
-from project_code.tests.test_abstract.abstract_test_inspector import AbstractTestInspector
+from tests.test_abstract.abstract_test_inspector import AbstractTestInspector
 
 from abstract.database.single_connection_interface import SingleConnectionInterface as tested_class
 

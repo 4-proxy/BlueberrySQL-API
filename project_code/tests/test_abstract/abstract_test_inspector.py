@@ -12,7 +12,7 @@ __all__: list[str] = [
 ]
 
 __author__ = "4-proxy"
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 
 import inspect
 
@@ -74,8 +74,8 @@ class AbstractTestInspector:
         """
         Example of `expected_signature_list`:
             >>> expected_signature_list: List[Tuple[str, Any]] = [
-            ...     ('self', Parameter.POSITIONAL_OR_KEYWORD),
-            ...     ('dbconfig', Parameter.VAR_KEYWORD),
+            ...    ('self', Parameter.POSITIONAL_OR_KEYWORD),
+            ...    ('dbconfig', Parameter.VAR_KEYWORD),
             ... ]
         """
         # Build

@@ -12,7 +12,7 @@ __all__: list[str] = [
 ]
 
 __author__ = "4-proxy"
-__version__ = "0.2.0"
+__version__ = "0.2.1"
 
 from abc import ABC, abstractmethod
 
@@ -30,7 +30,7 @@ class SQLAPIInterface(ABC):
     (e.g., MySQL, PostgreSQL, SQLite) to provide database-specific functionality.
 
     Args:
-        ABC: class from the `abc` module, which allows the creation
+        ABC: Class from the `abc` module, which allows the creation
         of abstract classes in Python.
     """
 

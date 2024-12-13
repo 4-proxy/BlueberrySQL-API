@@ -8,13 +8,13 @@ Apache license, version 2.0 (Apache-2.0 license)
 """
 
 __author__ = "4-proxy"
-__version__ = "0.2.1"
+__version__ = "0.2.2"
 
 import unittest
 
 from tests.test_abstract.abstract_test_inspector import AbstractTestInspector
 
-from abstract.database.pool_connection_interface import PoolConnectionInterface as tested_class
+from abstract.database.connection_interface import PoolConnectionInterface as tested_class
 
 from inspect import Parameter
 from typing import List, Any, Tuple

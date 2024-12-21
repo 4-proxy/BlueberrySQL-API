@@ -12,7 +12,7 @@ __all__: list[str] = [
 ]
 
 __author__ = "4-proxy"
-__version__ = "0.2.1"
+__version__ = "0.2.2"
 
 from abc import ABC, abstractmethod
 
@@ -31,7 +31,7 @@ class SQLAPIInterface(ABC):
 
     Args:
         ABC: Class from the `abc` module, which allows the creation
-        of abstract classes in Python.
+             of abstract classes in Python.
     """
 
     @abstractmethod
@@ -45,7 +45,7 @@ class SQLAPIInterface(ABC):
 
         Args:
             sql_query (str): The SQL command to be executed.
-            query_data (*): Optional parameters to be used in the SQL command.
+            query_data (tuple): Optional parameters to be used in the SQL command.
         """
         pass
 
@@ -61,7 +61,7 @@ class SQLAPIInterface(ABC):
 
         Args:
             sql_query (str): The SQL command to be executed.
-            query_data (*): Optional parameters to be used in the SQL command.
+            query_data (tuple): Optional parameters to be used in the SQL command.
 
         Returns:
             Any: The single result row, or `None` if no results are found.
@@ -81,7 +81,7 @@ class SQLAPIInterface(ABC):
 
         Args:
             sql_query (str): The SQL command to be executed.
-            query_data (*): Optional parameters to be used in the SQL command.
+            query_data (tuple): Optional parameters to be used in the SQL command.
 
         Returns:
             Iterable[Any]: An iterable collection of result rows, or `None` if no results are found.

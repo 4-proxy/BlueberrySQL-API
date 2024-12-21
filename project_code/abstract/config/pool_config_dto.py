@@ -12,7 +12,7 @@ __all__: list[str] = [
 ]
 
 __author__ = "4-proxy"
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 
 from dataclasses import dataclass
 from abc import ABC, abstractmethod
@@ -30,8 +30,8 @@ class PoolConfigDTO(ABC):
     to provide specific validation logic for the configuration fields.
 
     Args:
-        ABC: class from the `abc` module, which allows the creation
-        of abstract classes in Python.
+        ABC: Class from the `abc` module, which allows the creation
+             of abstract classes in Python.
 
     Attributes:
         name (str): The name of the pool configuration.

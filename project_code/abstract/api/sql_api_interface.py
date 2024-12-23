@@ -1,7 +1,11 @@
 # -*- coding: utf-8 -*-
 
 """
-description
+This module provides an abstract interface `SQLAPIInterface` for interacting with SQL databases.
+
+*Relationship with other modules:
+    `connection_interface`: Provides the necessary interfaces to manage connections.
+    `sql_database`: Uses this interface to execute database queries through the implemented classes.
 
 Copyright 2024 4-proxy
 Apache license, version 2.0 (Apache-2.0 license)
@@ -12,7 +16,7 @@ __all__: list[str] = [
 ]
 
 __author__ = "4-proxy"
-__version__ = "0.2.2"
+__version__ = "0.3.0"
 
 from abc import ABC, abstractmethod
 

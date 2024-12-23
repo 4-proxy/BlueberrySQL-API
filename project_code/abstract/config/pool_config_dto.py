@@ -1,7 +1,14 @@
 # -*- coding: utf-8 -*-
 
 """
-description
+This module defines a `PoolConfigDTO` class representing a data transfer object (DTO)
+for configuring a connection pool.
+
+*Relationship with other modules:
+    `connection_interface`: The connection pool configuration is used in the interface
+                            `PoolConnectionInterface` to manage the connection pool to the database.
+    `sql_database`: The class can be used to pass configuration data
+                    to specific database implementations that require connection pool configuration.
 
 Copyright 2024 4-proxy
 Apache license, version 2.0 (Apache-2.0 license)
@@ -12,7 +19,7 @@ __all__: list[str] = [
 ]
 
 __author__ = "4-proxy"
-__version__ = "0.1.1"
+__version__ = "0.2.0"
 
 from dataclasses import dataclass
 from abc import ABC, abstractmethod

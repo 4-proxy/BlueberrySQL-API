@@ -1,7 +1,12 @@
 # -*- coding: utf-8 -*-
 
 """
-description
+This module provides an abstract base class `SQLDataBase`
+for creating specific SQL database implementations.
+
+*Relationship with other modules:
+    `connection_interface`: Uses connection interfaces to control the selected connection type.
+    `sql_api_interface`: Provides an API for executing database queries.
 
 Copyright 2024 4-proxy
 Apache license, version 2.0 (Apache-2.0 license)
@@ -12,7 +17,7 @@ __all__: list[str] = [
 ]
 
 __author__ = "4-proxy"
-__version__ = "0.3.0"
+__version__ = "0.4.0"
 
 from abc import ABC, abstractmethod
 

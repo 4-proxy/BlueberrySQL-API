@@ -1,11 +1,18 @@
 # -*- coding: utf-8 -*-
 
 """
-Module providing abstract interfaces for single and pool database connection implementations.
+This module defines abstract interfaces for working with database connections.
 
-This module defines two abstract base classes: `SingleConnectionInterface` and `PoolConnectionInterface`.
-These interfaces serve as contracts for creating specific implementations of APIs that handle single
-database connections and connection pools, respectively.
+This module contains two abstract classes `SingleConnectionInterface` and `PoolConnectionInterface`,
+which define contracts for implementing database connections.
+
+The `SingleConnectionInterface` is designed to handle single connection,
+while the `PoolConnectionInterface` provides management of connection pool.
+
+*Relationship with other modules:
+    `sql_database`: The implementations of these interfaces are used by the `SQLDataBase`
+                    to manage the connections to specific databases.
+    `sql_api_interface`: The API interface uses these connections to perform database queries.
 
 Copyright 2024 4-proxy
 Apache license, version 2.0 (Apache-2.0 license)
@@ -17,7 +24,7 @@ __all__: list[str] = [
 ]
 
 __author__ = "4-proxy"
-__version__ = "0.2.0"
+__version__ = "0.3.0"
 
 from abc import ABC, abstractmethod
 

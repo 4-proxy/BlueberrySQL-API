@@ -1,20 +1,20 @@
 # -*- coding: utf-8 -*-
 
 """
-description
+Test cases for `SingleConnectionInterface` from the `connection_interface.py` file.
 
 Copyright 2024 4-proxy
 Apache license, version 2.0 (Apache-2.0 license)
 """
 
 __author__ = "4-proxy"
-__version__ = "0.2.0"
+__version__ = "0.2.3"
 
 import unittest
 
-from project_code.tests.test_abstract.abstract_test_inspector import AbstractTestInspector
+from tests.test_abstract.abstract_test_inspector import AbstractTestInspector
 
-from abstract.database.single_connection_interface import SingleConnectionInterface as tested_class
+from abstract.database.connection_interface import SingleConnectionInterface as tested_class
 
 from inspect import Parameter
 from typing import List, Any, Tuple

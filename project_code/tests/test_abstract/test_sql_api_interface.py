@@ -1,18 +1,18 @@
 # -*- coding: utf-8 -*-
 
 """
-description
+Test cases for `SQLAPIInterface` from the `sql_api_interface.py` file.
 
 Copyright 2024 4-proxy
 Apache license, version 2.0 (Apache-2.0 license)
 """
 
 __author__ = "4-proxy"
-__version__ = "0.2.0"
+__version__ = "0.2.2"
 
 import unittest
 
-from project_code.tests.test_abstract.abstract_test_inspector import AbstractTestInspector
+from tests.test_abstract.abstract_test_inspector import AbstractTestInspector
 
 from abstract.api.sql_api_interface import SQLAPIInterface as tested_class
 

@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 
 """
-description
+Test cases for `PoolConnectionInterface` from the `connection_interface.py` file.
 
 Copyright 2024 4-proxy
 Apache license, version 2.0 (Apache-2.0 license)
 """
 
 __author__ = "4-proxy"
-__version__ = "0.2.2"
+__version__ = "0.2.3"
 
 import unittest
 

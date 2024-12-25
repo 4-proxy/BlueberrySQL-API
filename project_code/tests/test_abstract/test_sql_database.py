@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 
 """
-description
+Test cases for `SQLDataBase` from the `sql_database.py` file.
 
 Copyright 2024 4-proxy
 Apache license, version 2.0 (Apache-2.0 license)
 """
 
 __author__ = "4-proxy"
-__version__ = "0.3.1"
+__version__ = "0.3.2"
 
 import unittest
 

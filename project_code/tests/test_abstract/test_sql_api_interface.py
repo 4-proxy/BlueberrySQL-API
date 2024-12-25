@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 
 """
-description
+Test cases for `SQLAPIInterface` from the `sql_api_interface.py` file.
 
 Copyright 2024 4-proxy
 Apache license, version 2.0 (Apache-2.0 license)
 """
 
 __author__ = "4-proxy"
-__version__ = "0.2.1"
+__version__ = "0.2.2"
 
 import unittest
 

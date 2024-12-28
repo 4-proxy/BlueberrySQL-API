@@ -8,16 +8,16 @@ Apache license, version 2.0 (Apache-2.0 license)
 """
 
 __author__ = "4-proxy"
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 
 import unittest
 
 from mysql.connector.pooling import CNX_POOL_MAXSIZE, CNX_POOL_MAXNAMESIZE
 
-from tests.test_abstract.abstract_test_inspector import AbstractTestInspector
-from abstract.config.pool_config_dto import PoolConfigDTO
+from tests.test_helper import *
 
 from mysql_support.mysql_pool_config_dto import MySQLPoolConfigDTO as tested_class
+from abstract.config.pool_config_dto import PoolConfigDTO
 
 from typing import Any, Dict, Tuple
 
@@ -28,20 +28,12 @@ class PositiveTestMySQLPoolConfigDTO(unittest.TestCase):
     def setUpClass(cls) -> None:
         super().setUpClass()
         cls._tested_class = tested_class
-        cls._expected_base_class = PoolConfigDTO
 
     # ------------------------------------------------------------------------------------------------------------------
-    def test_class_is_subclass_of_expected_base_class(self) -> None:
-        # Build
-        _class = self._tested_class
-        expected_base_class = self._expected_base_class
-
-        # Operate
-        _is_subclass: bool = issubclass(_class, expected_base_class)
-
-        # Check
-        self.assertTrue(expr=_is_subclass,
-                        msg=f"Failure! Inspected class: *{_class}* - is not a subclass of *{expected_base_class}*!")
+    def test_class_is_subclass_of_PoolConfigDTO(self) -> None:
+        TestHelper.check_inspected_class_is_subclass_of_expected_base_class(
+            _class=self._tested_class, expected_base_class=PoolConfigDTO
+        )
 
     # ------------------------------------------------------------------------------------------------------------------
     def test_class_implements_expected_abstractmethod(self) -> None:
@@ -53,8 +45,8 @@ class PositiveTestMySQLPoolConfigDTO(unittest.TestCase):
         with self.assertRaises(expected_exception=AssertionError,
                                msg=f"Failure! The expected abstractmethod: *{expected_abstractmethod}* - is not implements!"):
             # Operate
-            AbstractTestInspector.check_inspected_method_is_abstractmethod(_class=_class,
-                                                                           method_name=expected_abstractmethod)
+            AbstractTestHelper.check_inspected_method_is_abstractmethod(_class=_class,
+                                                                        method_name=expected_abstractmethod)
 
 
 # ______________________________________________________________________________________________________________________

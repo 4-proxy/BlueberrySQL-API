@@ -8,11 +8,11 @@ Apache license, version 2.0 (Apache-2.0 license)
 """
 
 __author__ = "4-proxy"
-__version__ = "0.2.3"
+__version__ = "0.3.0"
 
 import unittest
 
-from tests.test_abstract.abstract_test_inspector import AbstractTestInspector
+from tests.test_helper import *
 
 from abstract.database.connection_interface import PoolConnectionInterface as tested_class
 
@@ -34,7 +34,7 @@ class TestPoolConnectionInterface(unittest.TestCase):
 
     # ------------------------------------------------------------------------------------------------------------------
     def test_class_is_abstract_of_ABC(self) -> None:
-        AbstractTestInspector.check_inspected_class_is_abstract_of_ABC(_class=self._tested_class)
+        AbstractTestHelper.check_inspected_class_is_abstract_of_ABC(_class=self._tested_class)
 
     # ------------------------------------------------------------------------------------------------------------------
     def test_interface_has_expected_contracts(self) -> None:
@@ -45,8 +45,8 @@ class TestPoolConnectionInterface(unittest.TestCase):
         # Check
         for expected_contract in expected_contracts:
             with self.subTest(msg=f"Inspected interface don't have expected contract: *{expected_contract}*!"):
-                AbstractTestInspector.check_inspected_class_has_expected_method(_class=interface,
-                                                                                method_name=expected_contract)
+                TestHelper.check_inspected_class_has_expected_method(_class=interface,
+                                                                     method_name=expected_contract)
 
     # ------------------------------------------------------------------------------------------------------------------
     def test_everyone_expected_contract_is_abstractmethod(self) -> None:
@@ -57,8 +57,8 @@ class TestPoolConnectionInterface(unittest.TestCase):
         # Check
         for expected_contract in expected_contracts:
             with self.subTest(msg=f"Expected contract: *{expected_contract}* of *{interface}* - is not abstractmethod!"):
-                AbstractTestInspector.check_inspected_method_is_abstractmethod(_class=interface,
-                                                                               method_name=expected_contract)
+                AbstractTestHelper.check_inspected_method_is_abstractmethod(_class=interface,
+                                                                            method_name=expected_contract)
 
     # ------------------------------------------------------------------------------------------------------------------
     def test_create_connection_pool_signature_compliance(self) -> None:
@@ -72,7 +72,7 @@ class TestPoolConnectionInterface(unittest.TestCase):
         ]
 
         # Check
-        AbstractTestInspector.check_inspected_method_signature_is_compliance(
+        AbstractTestHelper.check_inspected_method_signature_is_compliance(
             _class=interface,
             method_name=contract_name,
             expected_signature_list=expected_signature_list

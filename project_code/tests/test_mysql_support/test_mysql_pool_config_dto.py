@@ -8,7 +8,7 @@ Apache license, version 2.0 (Apache-2.0 license)
 """
 
 __author__ = "4-proxy"
-__version__ = "0.2.0"
+__version__ = "0.2.1"
 
 import unittest
 
@@ -45,8 +45,9 @@ class PositiveTestMySQLPoolConfigDTO(unittest.TestCase):
         with self.assertRaises(expected_exception=AssertionError,
                                msg=f"Failure! The expected abstractmethod: *{expected_abstractmethod}* - is not implements!"):
             # Operate
-            AbstractTestHelper.check_inspected_method_is_abstractmethod(_class=_class,
-                                                                        method_name=expected_abstractmethod)
+            AbstractTestHelper.check_inspected_method_is_abstractmethod(
+                _class=_class, method_name=expected_abstractmethod
+            )
 
 
 # ______________________________________________________________________________________________________________________

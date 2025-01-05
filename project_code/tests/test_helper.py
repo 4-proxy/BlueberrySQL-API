@@ -18,7 +18,7 @@ __all__: list[str] = [
 ]
 
 __author__ = "4-proxy"
-__version__ = "0.2.0"
+__version__ = "0.3.0"
 
 import inspect
 
@@ -174,11 +174,19 @@ class AbstractTestHelper:
             actual_signature_list.append(new_signature)
 
         # Check
-        for expected_signature, actual_signature in zip(expected_signature_list, actual_signature_list):
-            assert expected_signature == actual_signature, \
-                f"Failure! Signature of the inspected parameter of method: *{method_name}* - not as expected!\n"\
-                f"Actual signature: {actual_signature}\n"\
-                f"Expected signature: {expected_signature}"
+        try:
+            for expected_signature, actual_signature in zip(expected_signature_list,
+                                                            actual_signature_list,
+                                                            strict=True):
+                if actual_signature != expected_signature:
+                    raise ValueError
+
+        except Exception:
+            raise AssertionError(
+                f"Failure! Signature list of the inspected method: *{method_name}* - not as expected!\n"
+                f"Actual signature list: {actual_signature_list}\n"
+                f"Expected signature list: {expected_signature_list}"
+            )
 
 
 # ______________________________________________________________________________________________________________________

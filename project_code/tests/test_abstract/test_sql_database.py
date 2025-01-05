@@ -8,7 +8,7 @@ Apache license, version 2.0 (Apache-2.0 license)
 """
 
 __author__ = "4-proxy"
-__version__ = "0.4.0"
+__version__ = "0.5.0"
 
 import unittest
 
@@ -21,11 +21,8 @@ from typing import Any, Dict, List
 
 # ______________________________________________________________________________________________________________________
 class ConcreteTestClass(tested_class):
-    def __repr__(self) -> str:
-        return "__repr__"
-
-    def _get_info_about_connection(self) -> str:
-        return "_get_info_about_connection"
+    def __str__(self) -> str:
+        return "__str__"
 
     def _get_info_about_server(self) -> str:
         return "_get_info_about_server"
@@ -43,9 +40,9 @@ class TestSQLDataBase(unittest.TestCase):
         AbstractTestHelper.check_inspected_class_is_abstract_of_ABC(_class=self._tested_class)
 
     # ------------------------------------------------------------------------------------------------------------------
-    def test_repr_method_is_abstractmethod(self) -> None:
+    def test_str_method_is_abstractmethod(self) -> None:
         AbstractTestHelper.check_inspected_method_is_abstractmethod(_class=self._tested_class,
-                                                                    method_name='__repr__')
+                                                                    method_name='__str__')
 
     # ------------------------------------------------------------------------------------------------------------------
     def test_get_info_methods_is_abstractmethods(self) -> None:
@@ -54,7 +51,6 @@ class TestSQLDataBase(unittest.TestCase):
 
         method_names: List[str] = [
             '_get_info_about_server',
-            '_get_info_about_connection',
         ]
 
         # Check

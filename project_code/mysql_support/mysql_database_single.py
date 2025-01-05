@@ -12,21 +12,32 @@ __all__: list[str] = [
 ]
 
 __author__ = "4-proxy"
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 
-from typing import Any, Iterable
+from mysql.connector import MySQLConnection
+
 from abstract.database.sql_database import SQLDataBase
 from abstract.api.sql_api_interface import SQLAPIInterface
 from abstract.database.connection_interface import SingleConnectionInterface
 
+from typing import Any, Iterable
+
 
 # ______________________________________________________________________________________________________________________
-class MySQLDataBaseSingle(SQLDataBase, SingleConnectionInterface, SQLAPIInterface):
-    def create_connection_with_database(self, **dbconfig) -> Any:
+class MySQLDataBaseSingle(SQLDataBase, SingleConnectionInterface[MySQLConnection], SQLAPIInterface):
+    def __init__(self, **dbconfig) -> None:
+        SQLDataBase.__init__(self=self, **dbconfig)
+
+    # ------------------------------------------------------------------------------------------------------------------
+    def create_new_connection_with_database(self) -> None:
         pass
 
     # ------------------------------------------------------------------------------------------------------------------
-    def get_connection_with_database(self) -> Any:
+    def get_connection_with_database(self) -> MySQLConnection:
+        pass
+
+    # ------------------------------------------------------------------------------------------------------------------
+    def close_active_connection_with_database(self) -> None:
         pass
 
     # ------------------------------------------------------------------------------------------------------------------
@@ -42,7 +53,7 @@ class MySQLDataBaseSingle(SQLDataBase, SingleConnectionInterface, SQLAPIInterfac
         pass
 
     # ------------------------------------------------------------------------------------------------------------------
-    def __repr__(self) -> str:
+    def __str__(self) -> str:
         pass
 
     # ------------------------------------------------------------------------------------------------------------------

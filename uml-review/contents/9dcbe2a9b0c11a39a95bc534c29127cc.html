@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>ReturnValue</title>
+    <title>close_active_pool</title>
     <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,300italic,400italic,700italic|Source+Code+Pro:300,400,700' rel='stylesheet' type='text/css'>
 <link rel="stylesheet" href="../assets/css/bootstrap.css">
 <link rel="stylesheet" href="../assets/css/jquery.bonsai.css">
@@ -19,15 +19,17 @@
 
       <!-- Name Title -->
 
-      <h1>ReturnValue</h1>
+      <h1>close_active_pool</h1>
 
       <!-- Type and Stereotype -->
 
       <section style="margin-top: .5em;">
         <span class="alert alert-info">
-          <span class="node-icon staruml-icon icon-UMLParameter"></span>
-          UMLParameter
+          <span class="node-icon staruml-icon icon-UMLOperation"></span>
+          UMLOperation
         </span>
+        
+          <span style="margin-left: 10px" class="alert alert-info">«abstractmethod»</span>
         
       </section>
 
@@ -50,13 +52,10 @@
           <span class="label label-info"><a href='8ddb3754a1fe761dc7392a957ab5157d.html'><span class='node-icon staruml-icon icon-UMLPackage'></span>database</a></span>
         
           <span>::</span>
-          <span class="label label-info"><a href='aa10be6a7b52e9bb3d32c4b8264066a5.html'><span class='node-icon staruml-icon icon-UMLClass'></span>SQLDataBase</a></span>
+          <span class="label label-info"><a href='ef80d2b03f8f0bcb9b71951ce770158f.html'><span class='node-icon staruml-icon icon-UMLInterface'></span>PoolConnectionInterface</a></span>
         
           <span>::</span>
-          <span class="label label-info"><a href='cc137c40fbbf2fdbd1af9b0374c9273b.html'><span class='node-icon staruml-icon icon-UMLOperation'></span>«abstractmethod»_get_info_about_connection</a></span>
-        
-          <span>::</span>
-          <span class="label label-info"><a href='ce42dabfa837e268a59a41b9b71769f2.html'><span class='node-icon staruml-icon icon-UMLParameter'></span>ReturnValue</a></span>
+          <span class="label label-info"><a href='9dcbe2a9b0c11a39a95bc534c29127cc.html'><span class='node-icon staruml-icon icon-UMLOperation'></span>«abstractmethod»close_active_pool</a></span>
         
       </section>
 
@@ -225,7 +224,7 @@
     
     <tr>
         <td>name</td>
-        <td>ReturnValue</td>
+        <td>close_active_pool</td>
     </tr>
     
     
@@ -240,7 +239,7 @@
     
     <tr>
         <td>stereotype</td>
-        <td><span class='label label-info'>null</span></td>
+        <td>abstractmethod</td>
     </tr>
     
     
@@ -286,8 +285,10 @@
     
     
     <tr>
-        <td>type</td>
-        <td>str</td>
+        <td>parameters</td>
+        <td>
+            
+        </td>
     </tr>
     
     
@@ -295,7 +296,45 @@
     
     
     <tr>
-        <td>multiplicity</td>
+        <td>raisedExceptions</td>
+        <td>
+            
+        </td>
+    </tr>
+    
+    
+    
+    
+    
+    <tr>
+        <td>concurrency</td>
+        <td>sequential</td>
+    </tr>
+    
+    
+    
+    
+    
+    <tr>
+        <td>isQuery</td>
+        <td><span class='label label-info'>false</span></td>
+    </tr>
+    
+    
+    
+    
+    
+    <tr>
+        <td>isAbstract</td>
+        <td><span class='label label-info'>true</span></td>
+    </tr>
+    
+    
+    
+    
+    
+    <tr>
+        <td>specification</td>
         <td></td>
     </tr>
     
@@ -303,46 +342,7 @@
     
     
     
-    <tr>
-        <td>isReadOnly</td>
-        <td><span class='label label-info'>false</span></td>
-    </tr>
     
-    
-    
-    
-    
-    <tr>
-        <td>isOrdered</td>
-        <td><span class='label label-info'>false</span></td>
-    </tr>
-    
-    
-    
-    
-    
-    <tr>
-        <td>isUnique</td>
-        <td><span class='label label-info'>false</span></td>
-    </tr>
-    
-    
-    
-    
-    
-    <tr>
-        <td>defaultValue</td>
-        <td></td>
-    </tr>
-    
-    
-    
-    
-    
-    <tr>
-        <td>direction</td>
-        <td>return</td>
-    </tr>
     
     
     

@@ -17,7 +17,7 @@ __all__: list[str] = [
 ]
 
 __author__ = "4-proxy"
-__version__ = "0.4.0"
+__version__ = "0.5.0"
 
 from abc import ABC, abstractmethod
 
@@ -75,8 +75,8 @@ class SQLDataBase(ABC):
 
     # ------------------------------------------------------------------------------------------------------------------
     @abstractmethod
-    def __repr__(self) -> str:
-        """__repr__ presents an instance of SQLDataBase.
+    def __str__(self) -> str:
+        """__str__ presents an instance of SQLDataBase.
 
         This abstract method must be implemented in order to display
         complete details about the present object.
@@ -104,21 +104,5 @@ class SQLDataBase(ABC):
 
         Returns:
             str: Information about the database server.
-        """
-        pass
-
-    # ------------------------------------------------------------------------------------------------------------------
-    @abstractmethod
-    def _get_info_about_connection(self) -> str:
-        """_get_info_about_connection retrieves information about the current database connection.
-
-        This method should be implemented in derived classes to provide details
-        about the current connection, including connection status, parameters,
-        and any other relevant information.
-
-        *By `connection` is meant both a single connection and a connection pool.
-
-        Returns:
-            str: Information about the current database connection.
         """
         pass

@@ -24,7 +24,7 @@ __all__: list[str] = [
 ]
 
 __author__ = "4-proxy"
-__version__ = "0.3.0"
+__version__ = "0.4.0"
 
 from abc import ABC, abstractmethod
 
@@ -44,21 +44,15 @@ class SingleConnectionInterface[ConnectionType](ABC):
     """
 
     @abstractmethod
-    def create_connection_with_database(self, **dbconfig) -> ConnectionType:
-        """create_connection_with_database establishes a connection to the database.
+    def create_new_connection_with_database(self) -> None:
+        """create_new_connection_with_database establishes a connection to the database.
 
         This abstract method must be establishes connection to the database
-        using the provided configuration in `dbconfig`.
+        using the provided configuration and assign it to the intended field.
+        That is, this method is a setter for a connection with database.
 
         *Implementations should also ensure that they check for an
         active connection before attempting to create a new one.
-
-        Args:
-            dbconfig (dict): A dictionary containing database configuration parameters
-                             for establishing a connection.
-
-        Returns:
-            ConnectionType: An instance representing the established database connection.
         """
 
     # ------------------------------------------------------------------------------------------------------------------
@@ -75,9 +69,23 @@ class SingleConnectionInterface[ConnectionType](ABC):
         """
         pass
 
+    # ------------------------------------------------------------------------------------------------------------------
+    @abstractmethod
+    def close_active_connection_with_database(self) -> None:
+        """close_active_connection_with_database closes the current active connection with the database.
+
+        This abstract method must be implemented to properly close the active connection
+        to the database, ensuring that all resources are released and any necessary cleanup
+        is performed.
+
+        *Implementations should check if an active connection exists before attempting to close it,
+        and handle any exceptions that may arise during the closing process.
+        """
+        pass
+
 
 # ______________________________________________________________________________________________________________________
-class PoolConnectionInterface[ConnectionPoolType, PooledConnectionType](ABC):
+class PoolConnectionInterface[PooledConnectionType](ABC):
     """PoolConnectionInterface interface for handling connection pool of database.
 
     This abstract interface defines basic methods for handling a single database connection.
@@ -91,18 +99,15 @@ class PoolConnectionInterface[ConnectionPoolType, PooledConnectionType](ABC):
     """
 
     @abstractmethod
-    def create_connection_pool(self, **dbconfig) -> ConnectionPoolType:
-        """create_connection_pool create a pool of database connections.
+    def create_new_connection_pool(self) -> None:
+        """create_new_connection_pool create a pool of database connections.
 
-        This abstract method must be creates a pool of database connections
-        using the provided configuration in `dbconfig`.
+        This abstract method should create a database connection pool
+        using the provided configuration and assign it to the intended field.
+        That is, this method is a setter for a connection pool.
 
-        Args:
-            dbconfig (dict): A dictionary containing database configuration parameters
-                             for create pool connection.
-
-        Returns:
-            ConnectionPoolType: An instance representing the connection pool to database.
+        *Implementations should also make sure that they check for an
+        active connection pool before attempting to create a new one.
         """
         pass
 
@@ -118,5 +123,18 @@ class PoolConnectionInterface[ConnectionPoolType, PooledConnectionType](ABC):
 
         Returns:
             PooledConnectionType: An instance of the connection with database from current pool.
+        """
+        pass
+
+    # ------------------------------------------------------------------------------------------------------------------
+    @abstractmethod
+    def close_active_pool(self) -> None:
+        """close_active_pool closes the current connection pool.
+
+        This abstract method should properly close all active connections
+        within the connection pool and release any associated resources.
+
+        *Implementations must ensure that all connections are safely terminated
+        and that no further operations can be performed on the closed pool.
         """
         pass

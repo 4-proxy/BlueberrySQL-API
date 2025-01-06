@@ -18,13 +18,14 @@ __all__: list[str] = [
 ]
 
 __author__ = "4-proxy"
-__version__ = "0.3.0"
+__version__ = "0.4.0"
 
 import inspect
 
 from inspect import Signature, Parameter
 from abc import ABC
-from typing import Any, Callable, Tuple, List, Type
+from os import name
+from typing import Any, Callable, Iterable, Tuple, List, Type
 
 
 # ______________________________________________________________________________________________________________________
@@ -226,3 +227,21 @@ class TestHelper:
         """
         assert issubclass(_class, expected_base_class), \
             f"Failure! Inspected class: *{_class}* - is not a subclass of *{expected_base_class}*!"
+
+    # ------------------------------------------------------------------------------------------------------------------
+    @staticmethod
+    def check_inspected_object_has_expected_fields(_obj, expected_fields: Iterable[str]) -> None:
+        """check_inspected_object_has_expected_fields checks if the `_obj` has expected fields.
+
+        *This method is not suitable for checking class fields, as they do not support the use of `__repr__()`.
+
+        Args:
+            _obj: The object to be checked.
+            expected_fields: Iterable sequence with the names of the expected fields of `_obj`.
+
+        Raises:
+            AssertionError: If `_obj` is not has one of `expected_fields`.
+        """
+        for expected_field in expected_fields:
+            assert hasattr(_obj, expected_field), \
+                f"Failure! Inspected object: *{_obj.__repr__()}* - not has expected field *{expected_field}*!"

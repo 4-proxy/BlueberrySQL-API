@@ -12,9 +12,9 @@ __all__: list[str] = [
 ]
 
 __author__ = "4-proxy"
-__version__ = "0.2.0"
+__version__ = "0.3.0"
 
-from mysql.connector import MySQLConnection
+from mysql.connector.connection import MySQLConnection
 
 from abstract.database.sql_database import SQLDataBase
 from abstract.api.sql_api_interface import SQLAPIInterface
@@ -28,9 +28,15 @@ class MySQLDataBaseSingle(SQLDataBase, SingleConnectionInterface[MySQLConnection
     def __init__(self, **dbconfig) -> None:
         SQLDataBase.__init__(self=self, **dbconfig)
 
+        self._connection: MySQLConnection = None
+
+        self.create_new_connection_with_database()
+
     # ------------------------------------------------------------------------------------------------------------------
     def create_new_connection_with_database(self) -> None:
-        pass
+        connection = MySQLConnection()
+
+        self._connection = connection
 
     # ------------------------------------------------------------------------------------------------------------------
     def get_connection_with_database(self) -> MySQLConnection:
@@ -54,7 +60,7 @@ class MySQLDataBaseSingle(SQLDataBase, SingleConnectionInterface[MySQLConnection
 
     # ------------------------------------------------------------------------------------------------------------------
     def __str__(self) -> str:
-        pass
+        return ""
 
     # ------------------------------------------------------------------------------------------------------------------
     def _get_info_about_server(self) -> str:

@@ -8,7 +8,7 @@ Apache license, version 2.0 (Apache-2.0 license)
 """
 
 __author__ = "4-proxy"
-__version__ = "0.2.1"
+__version__ = "0.2.2"
 
 import unittest
 
@@ -32,7 +32,7 @@ class PositiveTestMySQLPoolConfigDTO(unittest.TestCase):
     # ------------------------------------------------------------------------------------------------------------------
     def test_class_is_subclass_of_PoolConfigDTO(self) -> None:
         TestHelper.check_inspected_class_is_subclass_of_expected_base_class(
-            _class=self._tested_class, expected_base_class=PoolConfigDTO
+            _cls=self._tested_class, expected_base_class=PoolConfigDTO
         )
 
     # ------------------------------------------------------------------------------------------------------------------
@@ -46,7 +46,7 @@ class PositiveTestMySQLPoolConfigDTO(unittest.TestCase):
                                msg=f"Failure! The expected abstractmethod: *{expected_abstractmethod}* - is not implements!"):
             # Operate
             AbstractTestHelper.check_inspected_method_is_abstractmethod(
-                _class=_class, method_name=expected_abstractmethod
+                _cls=_class, method_name=expected_abstractmethod
             )
 
 

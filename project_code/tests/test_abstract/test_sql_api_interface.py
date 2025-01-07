@@ -8,7 +8,7 @@ Apache license, version 2.0 (Apache-2.0 license)
 """
 
 __author__ = "4-proxy"
-__version__ = "0.3.0"
+__version__ = "0.3.1"
 
 import unittest
 
@@ -35,7 +35,7 @@ class TestSQLAPIInterface(unittest.TestCase):
 
     # ------------------------------------------------------------------------------------------------------------------
     def test_class_is_abstract_of_ABC(self) -> None:
-        AbstractTestHelper.check_inspected_class_is_abstract_of_ABC(_class=self._tested_class)
+        AbstractTestHelper.check_inspected_class_is_abstract_of_ABC(_cls=self._tested_class)
 
     # ------------------------------------------------------------------------------------------------------------------
     def test_interface_has_expected_contracts(self) -> None:
@@ -46,7 +46,7 @@ class TestSQLAPIInterface(unittest.TestCase):
         # Check
         for expected_contract in expected_contracts:
             with self.subTest(msg=f"Inspected interface don't have expected contract: *{expected_contract}*!"):
-                TestHelper.check_inspected_class_has_expected_method(_class=interface,
+                TestHelper.check_inspected_class_has_expected_method(_cls=interface,
                                                                      method_name=expected_contract)
 
     # ------------------------------------------------------------------------------------------------------------------
@@ -58,7 +58,7 @@ class TestSQLAPIInterface(unittest.TestCase):
         # Check
         for expected_contract in expected_contracts:
             with self.subTest(msg=f"Expected contract: *{expected_contract}* of *{interface}* - is not abstractmethod!"):
-                AbstractTestHelper.check_inspected_method_is_abstractmethod(_class=interface,
+                AbstractTestHelper.check_inspected_method_is_abstractmethod(_cls=interface,
                                                                             method_name=expected_contract)
 
     # ------------------------------------------------------------------------------------------------------------------
@@ -77,7 +77,7 @@ class TestSQLAPIInterface(unittest.TestCase):
         for contract in contracts:
             with self.subTest(msg=f"Signature of inspected contract: *{contract}* - not as expected!"):
                 AbstractTestHelper.check_inspected_method_signature_is_compliance(
-                    _class=interface,
+                    _cls=interface,
                     method_name=contract,
                     expected_signature_list=expected_signature_list
                 )

@@ -8,7 +8,7 @@ Apache license, version 2.0 (Apache-2.0 license)
 """
 
 __author__ = "4-proxy"
-__version__ = "0.3.0"
+__version__ = "0.3.1"
 
 import unittest
 from unittest import mock as UnitMock
@@ -56,7 +56,7 @@ class TestPoolConfigDTO(unittest.TestCase):
 
     # ------------------------------------------------------------------------------------------------------------------
     def test_class_is_abstract_of_ABC(self) -> None:
-        AbstractTestHelper.check_inspected_class_is_abstract_of_ABC(_class=self._tested_class)
+        AbstractTestHelper.check_inspected_class_is_abstract_of_ABC(_cls=self._tested_class)
 
     # ------------------------------------------------------------------------------------------------------------------
     def test_inspected_dataclass_should_be_frozen(self) -> None:
@@ -115,7 +115,7 @@ class TestPoolConfigDTO(unittest.TestCase):
 
     # ------------------------------------------------------------------------------------------------------------------
     def test_validate_fields_data_is_abstractmethod(self) -> None:
-        AbstractTestHelper.check_inspected_method_is_abstractmethod(_class=self._tested_class,
+        AbstractTestHelper.check_inspected_method_is_abstractmethod(_cls=self._tested_class,
                                                                     method_name='validate_fields_data')
 
     # ------------------------------------------------------------------------------------------------------------------

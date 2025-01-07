@@ -8,7 +8,7 @@ Apache license, version 2.0 (Apache-2.0 license)
 """
 
 __author__ = "4-proxy"
-__version__ = "0.3.0"
+__version__ = "0.4.0"
 
 import unittest
 from unittest import mock as UnitMock
@@ -39,7 +39,7 @@ class TestMySQLDataBaseSingle(unittest.TestCase):
             'port': 1234
         }
         cls._expected_fields: Tuple[str, ...] = (
-            '_connection',
+            '_' + tested_class.__name__ + '__connection_with_database',
             'dbconfig',
         )
 
@@ -55,25 +55,25 @@ class TestMySQLDataBaseSingle(unittest.TestCase):
     # ------------------------------------------------------------------------------------------------------------------
     def test_is_subclass_of_SQLDataBase(self) -> None:
         TestHelper.check_inspected_class_is_subclass_of_expected_base_class(
-            _class=self._tested_class, expected_base_class=SQLDataBase
+            _cls=self._tested_class, expected_base_class=SQLDataBase
         )
 
     # ------------------------------------------------------------------------------------------------------------------
     def test_overridden_abstractmethods_of_SQLDataBase(self) -> None:
         AbstractTestHelper.check_inspected_class_overridden_abstractmethods_of_expected_class(
-            _class=self._tested_class, expected_class=SQLDataBase
+            _cls=self._tested_class, expected_class=SQLDataBase
         )
 
     # ------------------------------------------------------------------------------------------------------------------
     def test_implements_SingleConnectionInterface(self) -> None:
         AbstractTestHelper.check_inspected_class_implements_expected_interface(
-            _class=self._tested_class, expected_interface=SingleConnectionInterface
+            _cls=self._tested_class, expected_interface=SingleConnectionInterface
         )
 
     # ------------------------------------------------------------------------------------------------------------------
     def test_implements_SQLAPIInterface(self) -> None:
         AbstractTestHelper.check_inspected_class_implements_expected_interface(
-            _class=self._tested_class, expected_interface=SQLAPIInterface
+            _cls=self._tested_class, expected_interface=SQLAPIInterface
         )
 
     # ------------------------------------------------------------------------------------------------------------------
@@ -115,10 +115,11 @@ class TestMySQLDataBaseSingle(unittest.TestCase):
     # ------------------------------------------------------------------------------------------------------------------
     @UnitMock.patch.object(target=tested_module, attribute='MySQLConnection',
                            autospec=True)
-    def test_method_create_new_connection_with_database_sets_MySQLConnection_to_field_connection(self,
-                                                                                                 MockMySQLConnection: UnitMock.MagicMock) -> None:
+    def test_method_create_new_connection_with_database_sets_MySQLConnection_to_field_connection_with_database(self,
+                                                                                                               MockMySQLConnection: UnitMock.MagicMock) -> None:
         # Build
-        expected_field = '_connection'
+        _class = self._tested_class
+        expected_field: str = '_' + _class.__name__ + '__connection_with_database'
         expected_value = 'OK!'
 
         MockMySQLConnection.return_value = expected_value

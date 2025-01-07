@@ -8,7 +8,7 @@ Apache license, version 2.0 (Apache-2.0 license)
 """
 
 __author__ = "4-proxy"
-__version__ = "0.5.0"
+__version__ = "0.5.1"
 
 import unittest
 
@@ -37,11 +37,11 @@ class TestSQLDataBase(unittest.TestCase):
 
     # ------------------------------------------------------------------------------------------------------------------
     def test_class_is_abstract_of_ABC(self) -> None:
-        AbstractTestHelper.check_inspected_class_is_abstract_of_ABC(_class=self._tested_class)
+        AbstractTestHelper.check_inspected_class_is_abstract_of_ABC(_cls=self._tested_class)
 
     # ------------------------------------------------------------------------------------------------------------------
     def test_str_method_is_abstractmethod(self) -> None:
-        AbstractTestHelper.check_inspected_method_is_abstractmethod(_class=self._tested_class,
+        AbstractTestHelper.check_inspected_method_is_abstractmethod(_cls=self._tested_class,
                                                                     method_name='__str__')
 
     # ------------------------------------------------------------------------------------------------------------------
@@ -56,7 +56,7 @@ class TestSQLDataBase(unittest.TestCase):
         # Check
         for method_name in method_names:
             with self.subTest(msg=f"Inspected method: *{method_name}* of *{_class}* - is not abstractmethod!"):
-                AbstractTestHelper.check_inspected_method_is_abstractmethod(_class=_class,
+                AbstractTestHelper.check_inspected_method_is_abstractmethod(_cls=_class,
                                                                             method_name=method_name)
 
     # ------------------------------------------------------------------------------------------------------------------

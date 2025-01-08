@@ -8,11 +8,11 @@ Apache license, version 2.0 (Apache-2.0 license)
 """
 
 __author__ = "4-proxy"
-__version__ = "0.3.2"
+__version__ = "0.5.1"
 
 import unittest
 
-from tests.test_abstract.abstract_test_inspector import AbstractTestInspector
+from tests.test_helper import *
 
 from abstract.database.sql_database import SQLDataBase as tested_class
 
@@ -21,11 +21,8 @@ from typing import Any, Dict, List
 
 # ______________________________________________________________________________________________________________________
 class ConcreteTestClass(tested_class):
-    def __repr__(self) -> str:
-        return "__repr__"
-
-    def _get_info_about_connection(self) -> str:
-        return "_get_info_about_connection"
+    def __str__(self) -> str:
+        return "__str__"
 
     def _get_info_about_server(self) -> str:
         return "_get_info_about_server"
@@ -40,12 +37,12 @@ class TestSQLDataBase(unittest.TestCase):
 
     # ------------------------------------------------------------------------------------------------------------------
     def test_class_is_abstract_of_ABC(self) -> None:
-        AbstractTestInspector.check_inspected_class_is_abstract_of_ABC(_class=self._tested_class)
+        AbstractTestHelper.check_inspected_class_is_abstract_of_ABC(_cls=self._tested_class)
 
     # ------------------------------------------------------------------------------------------------------------------
-    def test_repr_method_is_abstractmethod(self) -> None:
-        AbstractTestInspector.check_inspected_method_is_abstractmethod(_class=self._tested_class,
-                                                                       method_name='__repr__')
+    def test_str_method_is_abstractmethod(self) -> None:
+        AbstractTestHelper.check_inspected_method_is_abstractmethod(_cls=self._tested_class,
+                                                                    method_name='__str__')
 
     # ------------------------------------------------------------------------------------------------------------------
     def test_get_info_methods_is_abstractmethods(self) -> None:
@@ -54,14 +51,13 @@ class TestSQLDataBase(unittest.TestCase):
 
         method_names: List[str] = [
             '_get_info_about_server',
-            '_get_info_about_connection',
         ]
 
         # Check
         for method_name in method_names:
             with self.subTest(msg=f"Inspected method: *{method_name}* of *{_class}* - is not abstractmethod!"):
-                AbstractTestInspector.check_inspected_method_is_abstractmethod(_class=_class,
-                                                                               method_name=method_name)
+                AbstractTestHelper.check_inspected_method_is_abstractmethod(_cls=_class,
+                                                                            method_name=method_name)
 
     # ------------------------------------------------------------------------------------------------------------------
     def test_constructor_initializes_private_field_dbconfig(self) -> None:

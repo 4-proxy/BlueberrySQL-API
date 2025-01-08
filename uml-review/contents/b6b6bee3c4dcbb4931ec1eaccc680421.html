@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title></title>
+    <title>_get_info_about_connection</title>
     <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,300italic,400italic,700italic|Source+Code+Pro:300,400,700' rel='stylesheet' type='text/css'>
 <link rel="stylesheet" href="../assets/css/bootstrap.css">
 <link rel="stylesheet" href="../assets/css/jquery.bonsai.css">
@@ -19,14 +19,14 @@
 
       <!-- Name Title -->
 
-      <h1>(unnamed)</h1>
+      <h1>_get_info_about_connection</h1>
 
       <!-- Type and Stereotype -->
 
       <section style="margin-top: .5em;">
         <span class="alert alert-info">
-          <span class="node-icon staruml-icon icon-UMLInterfaceRealization"></span>
-          UMLInterfaceRealization
+          <span class="node-icon staruml-icon icon-UMLOperation"></span>
+          UMLOperation
         </span>
         
       </section>
@@ -44,16 +44,16 @@
           <span class="label label-info"><a href='221fefbb0400cf2a2e17dbb53643ca58.html'><span class='node-icon staruml-icon icon-UMLPackage'></span>project_code</a></span>
         
           <span>::</span>
-          <span class="label label-info"><a href='b668341575a159ea0f3a4110a33480fc.html'><span class='node-icon staruml-icon icon-UMLPackage'></span>abstract</a></span>
+          <span class="label label-info"><a href='c302c1309c423cde5e528c38b56696b3.html'><span class='node-icon staruml-icon icon-UMLPackage'></span>mysql</a></span>
         
           <span>::</span>
-          <span class="label label-info"><a href='8ddb3754a1fe761dc7392a957ab5157d.html'><span class='node-icon staruml-icon icon-UMLPackage'></span>database</a></span>
+          <span class="label label-info"><a href='7c5d947a78602d4a0b45523ce6c5eadc.html'><span class='node-icon staruml-icon icon-UMLPackage'></span>database</a></span>
         
           <span>::</span>
-          <span class="label label-info"><a href='aa10be6a7b52e9bb3d32c4b8264066a5.html'><span class='node-icon staruml-icon icon-UMLClass'></span>SQLDataBase</a></span>
+          <span class="label label-info"><a href='94fefb8aa22c3168d4fe840d4bac43a4.html'><span class='node-icon staruml-icon icon-UMLClass'></span>MySQLDataBaseSingle</a></span>
         
           <span>::</span>
-          <span class="label label-info"><a href='7caff25d4e77bf31cdbb80b3755abe05.html'><span class='node-icon staruml-icon icon-UMLInterfaceRealization'></span>(SQLDataBase→SQLAPIInterface)</a></span>
+          <span class="label label-info"><a href='b6b6bee3c4dcbb4931ec1eaccc680421.html'><span class='node-icon staruml-icon icon-UMLOperation'></span>_get_info_about_connection</a></span>
         
       </section>
 
@@ -80,25 +80,6 @@
 
       <!-- Directed Relationship -->
 
-      
-      <section class="element-list">
-        <table width="100%">
-          <tr>
-            <td width="50%">
-              <h3>Source</h3>
-              <ul class="nav nav-list">
-                <li><a href='aa10be6a7b52e9bb3d32c4b8264066a5.html'><span class='node-icon staruml-icon icon-UMLClass'></span>SQLDataBase</a></a></li>
-              </ul>
-            </td>
-            <td width="50%">
-              <h3>Target</h3>
-              <ul class="nav nav-list">
-                <li><a href='74aa89d93025396f1dc2693d9809b227.html'><span class='node-icon staruml-icon icon-UMLInterface'></span>SQLAPIInterface</a></a></li>
-              </ul>
-            </td>
-          </tr>
-        </table>
-      </section>
       
 
       <!-- Undirected Relationship -->
@@ -155,6 +136,26 @@
 
       <!-- Parameters -->
 
+      
+      <section>
+        <h3>Parameters</h3>
+        <table class="table table-striped table-bordered">
+          <tr>
+            <th>Direction</th>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Description</th>
+          </tr>
+          
+          <tr>
+            <td>return</td>
+            <td><a href="52bd0ce46b772b80b7b8176cbcb61249.html">ReturnValue</a></td>
+            <td>Dict[str, Any] </td>
+            <td></td>
+          </tr>
+          
+        </table>
+      </section>
       
 
       <!-- Diagrams -->
@@ -241,7 +242,7 @@
     
     <tr>
         <td>name</td>
-        <td></td>
+        <td>_get_info_about_connection</td>
     </tr>
     
     
@@ -249,24 +250,6 @@
     
     
     
-    
-    
-    
-    
-    
-    <tr>
-        <td>source</td>
-        <td><a href='aa10be6a7b52e9bb3d32c4b8264066a5.html'><span class='node-icon staruml-icon icon-UMLClass'></span>SQLDataBase</a></td>
-    </tr>
-    
-    
-    
-    
-    
-    <tr>
-        <td>target</td>
-        <td><a href='74aa89d93025396f1dc2693d9809b227.html'><span class='node-icon staruml-icon icon-UMLInterface'></span>SQLAPIInterface</a></td>
-    </tr>
     
     
     
@@ -283,7 +266,18 @@
     
     <tr>
         <td>visibility</td>
-        <td>public</td>
+        <td>protected</td>
+    </tr>
+    
+    
+    
+    
+    
+    
+    
+    <tr>
+        <td>isStatic</td>
+        <td><span class='label label-info'>false</span></td>
     </tr>
     
     
@@ -291,9 +285,85 @@
     
     
     <tr>
-        <td>mapping</td>
+        <td>isLeaf</td>
+        <td><span class='label label-info'>false</span></td>
+    </tr>
+    
+    
+    
+    
+    
+    <tr>
+        <td>featureDirection</td>
+        <td>provided</td>
+    </tr>
+    
+    
+    
+    
+    
+    <tr>
+        <td>parameters</td>
+        <td>
+            
+            
+            <a href='52bd0ce46b772b80b7b8176cbcb61249.html'><span class='node-icon staruml-icon icon-UMLParameter'></span>ReturnValue</a>
+            
+        </td>
+    </tr>
+    
+    
+    
+    
+    
+    <tr>
+        <td>raisedExceptions</td>
+        <td>
+            
+        </td>
+    </tr>
+    
+    
+    
+    
+    
+    <tr>
+        <td>concurrency</td>
+        <td>sequential</td>
+    </tr>
+    
+    
+    
+    
+    
+    <tr>
+        <td>isQuery</td>
+        <td><span class='label label-info'>true</span></td>
+    </tr>
+    
+    
+    
+    
+    
+    <tr>
+        <td>isAbstract</td>
+        <td><span class='label label-info'>false</span></td>
+    </tr>
+    
+    
+    
+    
+    
+    <tr>
+        <td>specification</td>
         <td></td>
     </tr>
+    
+    
+    
+    
+    
+    
     
     
     
@@ -306,6 +376,18 @@
       
 
       <!-- Constraints, Dependencies, Dependants -->
+
+      
+        
+        
+
+
+        
+        
+
+
+        
+        
 
       
 

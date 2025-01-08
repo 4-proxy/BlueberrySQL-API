@@ -13,5 +13,5 @@ IF %ERRORLEVEL% NEQ 0 (
 
 cd .\project_code
 
-coverage run -m unittest discover .\tests\test_abstract "test*.py"
+coverage run -m unittest discover .\tests\ "test*.py"
 coverage report

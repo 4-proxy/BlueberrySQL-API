@@ -12,7 +12,7 @@ __all__: list[str] = [
 ]
 
 __author__ = "4-proxy"
-__version__ = "0.4.0"
+__version__ = "0.4.1"
 
 from mysql.connector.connection import MySQLConnection
 
@@ -25,7 +25,7 @@ from typing import Any, Iterable
 
 # ______________________________________________________________________________________________________________________
 class MySQLDataBaseSingle(SQLDataBase, SingleConnectionInterface[MySQLConnection], SQLAPIInterface):
-    def __init__(self, **dbconfig) -> None:
+    def __init__(self, **dbconfig: Any) -> None:
         SQLDataBase.__init__(self=self, **dbconfig)
 
         self.__connection_with_database: MySQLConnection = None

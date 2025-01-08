@@ -8,7 +8,7 @@ Apache license, version 2.0 (Apache-2.0 license)
 """
 
 __author__ = "4-proxy"
-__version__ = "0.2.2"
+__version__ = "0.3.0"
 
 import unittest
 
@@ -19,7 +19,8 @@ from tests.test_helper import *
 from mysql_support.mysql_pool_config_dto import MySQLPoolConfigDTO as tested_class
 from abstract.config.pool_config_dto import PoolConfigDTO
 
-from typing import Any, Dict, Tuple
+from mysql_support.mysql_pool_config_dto import MySQLPoolConfigError
+from typing import Any, Dict, List, Tuple
 
 
 # ______________________________________________________________________________________________________________________
@@ -64,12 +65,12 @@ class NegativeTestMySQLPoolConfigDTO(unittest.TestCase):
         }
 
     # ------------------------------------------------------------------------------------------------------------------
-    def _check_invalid_field_value_raise_expected_exception(self,
-                                                            field_name: str,
-                                                            invalid_value: Any,
-                                                            expected_exception: type) -> None:
+    def _check_invalid_field_value_raise_MySQLPoolConfigError(self,
+                                                              field_name: str,
+                                                              invalid_value: Any) -> None:
         # Build
         _class = self._tested_class
+        expected_exception = MySQLPoolConfigError
         pool_params: Dict[str, Any] = self._valid_pool_params.copy()
 
         # Change valid field value to invalid for test case
@@ -77,38 +78,48 @@ class NegativeTestMySQLPoolConfigDTO(unittest.TestCase):
 
         # Check
         with self.assertRaises(expected_exception=expected_exception,
-                               msg=f"Failure! The invalid value of field: *{field_name}* - not raise *{expected_exception}*!"):
+                               msg=f"Failure! The invalid value of field: *{field_name}* - not raise expected exception!"):
             # Operate
             _class(**pool_params)
 
     # ------------------------------------------------------------------------------------------------------------------
     def test_invalid_type_of_name_field_raise_TypeError(self) -> None:
-        self._check_invalid_field_value_raise_expected_exception(
-            field_name='name', invalid_value=1234, expected_exception=TypeError
+        self._check_invalid_field_value_raise_MySQLPoolConfigError(
+            field_name='name', invalid_value=123
         )
 
     # ------------------------------------------------------------------------------------------------------------------
     def test_invalid_type_of_size_field_raise_TypeError(self) -> None:
-        self._check_invalid_field_value_raise_expected_exception(
-            field_name='size', invalid_value="5", expected_exception=TypeError
+        self._check_invalid_field_value_raise_MySQLPoolConfigError(
+            field_name='size', invalid_value="5"
         )
 
     # ------------------------------------------------------------------------------------------------------------------
     def test_invalid_type_of_reset_session_field_raise_TypeError(self) -> None:
-        self._check_invalid_field_value_raise_expected_exception(
-            field_name='reset_session', invalid_value="True", expected_exception=TypeError
+        self._check_invalid_field_value_raise_MySQLPoolConfigError(
+            field_name='reset_session', invalid_value="True"
         )
 
     # ------------------------------------------------------------------------------------------------------------------
     def test_invalid_value_of_name_field_raise_ValueError(self) -> None:
+        from string import punctuation, digits
+
         # Build
-        invalid_values: Tuple[str, ...] = "", " ", "      "
+        invalid_values: List[str] = [
+            "",
+            " ",
+            "      ",
+        ]
+
+        invalid_characters: str = punctuation + digits + " "
+
+        invalid_values.extend([f"pool{char}name" for char in invalid_characters])
 
         # Check
         for invalid_value in invalid_values:
             with self.subTest(pattern=invalid_value):
-                self._check_invalid_field_value_raise_expected_exception(
-                    field_name='name', invalid_value=invalid_value, expected_exception=ValueError
+                self._check_invalid_field_value_raise_MySQLPoolConfigError(
+                    field_name='name', invalid_value=invalid_value
                 )
 
     # ------------------------------------------------------------------------------------------------------------------
@@ -119,8 +130,8 @@ class NegativeTestMySQLPoolConfigDTO(unittest.TestCase):
         # Check
         for invalid_value in invalid_values:
             with self.subTest(pattern=invalid_value):
-                self._check_invalid_field_value_raise_expected_exception(
-                    field_name='size', invalid_value=invalid_value, expected_exception=ValueError
+                self._check_invalid_field_value_raise_MySQLPoolConfigError(
+                    field_name='size', invalid_value=invalid_value
                 )
 
     # ------------------------------------------------------------------------------------------------------------------
@@ -137,8 +148,8 @@ class NegativeTestMySQLPoolConfigDTO(unittest.TestCase):
         # Check
         for invalid_value in invalid_values:
             with self.subTest(pattern=invalid_value):
-                self._check_invalid_field_value_raise_expected_exception(
-                    field_name='size', invalid_value=invalid_value, expected_exception=ValueError
+                self._check_invalid_field_value_raise_MySQLPoolConfigError(
+                    field_name='size', invalid_value=invalid_value
                 )
 
     # ------------------------------------------------------------------------------------------------------------------
@@ -156,6 +167,6 @@ class NegativeTestMySQLPoolConfigDTO(unittest.TestCase):
         # Check
         for invalid_value in invalid_values:
             with self.subTest(pattern=invalid_value):
-                self._check_invalid_field_value_raise_expected_exception(
-                    field_name='name', invalid_value=invalid_value, expected_exception=ValueError
+                self._check_invalid_field_value_raise_MySQLPoolConfigError(
+                    field_name='name', invalid_value=invalid_value
                 )

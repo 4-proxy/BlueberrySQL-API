@@ -8,7 +8,7 @@ Apache license, version 2.0 (Apache-2.0 license)
 """
 
 __author__ = "4-proxy"
-__version__ = "0.4.0"
+__version__ = "0.4.1"
 
 import unittest
 from unittest import mock as UnitMock
@@ -39,16 +39,17 @@ class TestMySQLDataBaseSingle(unittest.TestCase):
             'port': 1234
         }
         cls._expected_fields: Tuple[str, ...] = (
-            '_' + tested_class.__name__ + '__connection_with_database',
+            TestHelperTool.get_full_name_of_class_private_field(_cls=tested_class,
+                                                                private_field_name='connection_with_database'),
             'dbconfig',
         )
 
     # ------------------------------------------------------------------------------------------------------------------
     def _create_instance_of_tested_class(self) -> tested_class:
-        _class = self._tested_class
+        _cls = self._tested_class
         dbconfig: Dict[str, Any] = self._dbconfig
 
-        instance = _class(**dbconfig)
+        instance = _cls(**dbconfig)
 
         return instance
 
@@ -79,7 +80,9 @@ class TestMySQLDataBaseSingle(unittest.TestCase):
     # ------------------------------------------------------------------------------------------------------------------
     @UnitMock.patch.object(target=SQLDataBase, attribute='__init__',
                            autospec=True)
-    def test_constructor_calls_SQLDataBase_init_with_kwargs_dbconfig(self,
+    @UnitMock.patch.object(target=tested_class, attribute='create_new_connection_with_database',
+                           autospec=True)
+    def test_constructor_calls_SQLDataBase_init_with_kwargs_dbconfig(self, _,
                                                                      mock__init__: UnitMock.MagicMock) -> None:
         # Build
         dbconfig: Dict[str, Any] = self._dbconfig
@@ -92,7 +95,9 @@ class TestMySQLDataBaseSingle(unittest.TestCase):
         mock__init__.assert_called_once_with(self=instance, **dbconfig)
 
     # ------------------------------------------------------------------------------------------------------------------
-    def test_instance_has_expected_fields(self) -> None:
+    @UnitMock.patch.object(target=tested_module, attribute='MySQLConnection',
+                           autospec=True)
+    def test_instance_has_expected_fields(self, _) -> None:
         # Build
         instance: tested_class = self._create_instance_of_tested_class()
 
@@ -115,12 +120,14 @@ class TestMySQLDataBaseSingle(unittest.TestCase):
     # ------------------------------------------------------------------------------------------------------------------
     @UnitMock.patch.object(target=tested_module, attribute='MySQLConnection',
                            autospec=True)
-    def test_method_create_new_connection_with_database_sets_MySQLConnection_to_field_connection_with_database(self,
-                                                                                                               MockMySQLConnection: UnitMock.MagicMock) -> None:
+    def test_method_create_new_connection_with_database_sets_configured_MySQLConnection_to_field_connection_with_database(self,
+                                                                                                                          MockMySQLConnection: UnitMock.MagicMock) -> None:
         # Build
-        _class = self._tested_class
-        expected_field: str = '_' + _class.__name__ + '__connection_with_database'
+        _cls = self._tested_class
+        expected_dbconfig: Dict[str, Any] = self._dbconfig
         expected_value = 'OK!'
+        expected_field: str = TestHelperTool.get_full_name_of_class_private_field(_cls=_cls,
+                                                                                  private_field_name='connection_with_database')
 
         MockMySQLConnection.return_value = expected_value
 
@@ -130,6 +137,8 @@ class TestMySQLDataBaseSingle(unittest.TestCase):
         actual_field_value: str = getattr(instance, expected_field)
 
         # Check
+        MockMySQLConnection.assert_called_once_with(**expected_dbconfig)
+
         self.assertEqual(
             first=actual_field_value,
             second=expected_value,

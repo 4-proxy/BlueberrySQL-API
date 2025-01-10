@@ -14,17 +14,18 @@ Apache license, version 2.0 (Apache-2.0 license)
 
 __all__: list[str] = [
     'AbstractTestHelper',
-    'TestHelper'
+    'TestHelper',
+    'TestHelperTool'
 ]
 
 __author__ = "4-proxy"
-__version__ = "0.5.0"
+__version__ = "0.6.0"
 
 import inspect
 
 from inspect import Signature, Parameter
 from abc import ABC
-from typing import Any, Callable, Iterable, Tuple, List, Type
+from typing import Any, Callable, Iterable, NoReturn, Tuple, List, Type
 
 
 # ______________________________________________________________________________________________________________________
@@ -37,6 +38,11 @@ class AbstractTestHelper:
     the expected abstract class structure and method signatures.
     """
 
+    # ------------------------------------------------------------------------------------------------------------------
+    def __new__(cls) -> NoReturn:
+        raise TypeError(f"Sorry, but this class: *{cls.__qualname__}* - is not intended to be initialized!")
+
+    # ------------------------------------------------------------------------------------------------------------------
     @staticmethod
     def check_inspected_class_is_abstract_of_ABC(_cls: Type[ABC]) -> None:
         """
@@ -218,6 +224,10 @@ class TestHelper:
     """
 
     # ------------------------------------------------------------------------------------------------------------------
+    def __new__(cls) -> NoReturn:
+        raise TypeError(f"Sorry, but this class: *{cls.__qualname__}* - is not intended to be initialized!")
+
+    # ------------------------------------------------------------------------------------------------------------------
     @staticmethod
     def check_inspected_class_has_expected_method(_cls: Type,
                                                   method_name: str) -> None:
@@ -285,3 +295,42 @@ class TestHelper:
                 raise AssertionError(
                     f"Failure! Inspected object: *{_obj.__repr__()}* - not has expected field *{expected_field}*!"
                 )
+
+
+# ______________________________________________________________________________________________________________________
+class TestHelperTool:
+    """
+    TestHelperTool provides helper methods for working with classes in a testing context.
+    """
+
+    # ------------------------------------------------------------------------------------------------------------------
+    def __new__(cls) -> NoReturn:
+        raise TypeError(f"Sorry, but this class: *{cls.__qualname__}* - is not intended to be initialized!")
+
+    # ------------------------------------------------------------------------------------------------------------------
+    @staticmethod
+    def get_full_name_of_class_private_field(_cls: Type, private_field_name: str) -> str:
+        """
+        get_full_name_of_class_private_field gets the full name of the `_cls` private field.
+
+        The method generates the full name of a private field by adding prefixes required to access it
+        according to the naming conventions in `Python`.
+
+        Args:
+            _cls (Type): The class containing the private field.
+            private_field_name (str): The name of the private field without prefixes.
+
+        Returns:
+            str: The full name of the private field in the format '_<class_name>__<field_name>'.
+
+        Example usage:
+            >>> full_name = TestHelperTool.get_full_name_of_class_private_field(MyClass, 'my_private_field')
+            >>> print(full_name) # Output: '_MyClass__my_private_field'
+        """
+        field_name: str = private_field_name
+        if not private_field_name.startswith('__'):
+            field_name = '__' + private_field_name
+
+        full_field_name: str = '_' + _cls.__name__ + field_name
+
+        return full_field_name

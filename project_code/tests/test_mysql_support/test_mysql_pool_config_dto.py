@@ -8,7 +8,7 @@ Apache license, version 2.0 (Apache-2.0 license)
 """
 
 __author__ = "4-proxy"
-__version__ = "0.3.0"
+__version__ = "0.3.1"
 
 import unittest
 
@@ -39,7 +39,7 @@ class PositiveTestMySQLPoolConfigDTO(unittest.TestCase):
     # ------------------------------------------------------------------------------------------------------------------
     def test_class_implements_expected_abstractmethod(self) -> None:
         # Build
-        _class = self._tested_class
+        _cls = self._tested_class
         expected_abstractmethod = 'validate_fields_data'
 
         # Check
@@ -47,7 +47,7 @@ class PositiveTestMySQLPoolConfigDTO(unittest.TestCase):
                                msg=f"Failure! The expected abstractmethod: *{expected_abstractmethod}* - is not implements!"):
             # Operate
             AbstractTestHelper.check_inspected_method_is_abstractmethod(
-                _cls=_class, method_name=expected_abstractmethod
+                _cls=_cls, method_name=expected_abstractmethod
             )
 
 
@@ -69,7 +69,7 @@ class NegativeTestMySQLPoolConfigDTO(unittest.TestCase):
                                                               field_name: str,
                                                               invalid_value: Any) -> None:
         # Build
-        _class = self._tested_class
+        _cls = self._tested_class
         expected_exception = MySQLPoolConfigError
         pool_params: Dict[str, Any] = self._valid_pool_params.copy()
 
@@ -80,7 +80,7 @@ class NegativeTestMySQLPoolConfigDTO(unittest.TestCase):
         with self.assertRaises(expected_exception=expected_exception,
                                msg=f"Failure! The invalid value of field: *{field_name}* - not raise expected exception!"):
             # Operate
-            _class(**pool_params)
+            _cls(**pool_params)
 
     # ------------------------------------------------------------------------------------------------------------------
     def test_invalid_type_of_name_field_raise_TypeError(self) -> None:

@@ -8,13 +8,13 @@ Apache license, version 2.0 (Apache-2.0 license)
 """
 
 __author__ = "4-proxy"
-__version__ = "0.3.1"
+__version__ = "0.3.2"
 
 import unittest
 
 from mysql.connector.pooling import CNX_POOL_MAXSIZE, CNX_POOL_MAXNAMESIZE
 
-from tests.test_helper import *
+from tests.test_helper import AbstractTestHelper, TestHelper
 
 from mysql_support.mysql_pool_config_dto import MySQLPoolConfigDTO as tested_class
 from abstract.config.pool_config_dto import PoolConfigDTO

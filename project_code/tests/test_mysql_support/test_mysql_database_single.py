@@ -8,12 +8,12 @@ Apache license, version 2.0 (Apache-2.0 license)
 """
 
 __author__ = "4-proxy"
-__version__ = "0.5.0"
+__version__ = "0.6.0"
 
 import unittest
 from unittest import mock as UnitMock
 
-from tests.test_helper import *
+from tests.test_helper import AbstractTestHelper, TestHelper, TestHelperTool
 
 from mysql_support import mysql_database_single as tested_module
 from mysql_support.mysql_database_single import MySQLDataBaseSingle as tested_class
@@ -22,7 +22,7 @@ from abstract.database.sql_database import SQLDataBase
 from abstract.database.connection_interface import SingleConnectionInterface
 from abstract.api.sql_api_interface import SQLAPIInterface
 
-from typing import Dict, Any, Tuple
+from typing import Callable, Dict, Any, Tuple
 
 
 # ______________________________________________________________________________________________________________________
@@ -36,13 +36,31 @@ class TestMySQLDataBaseSingle(unittest.TestCase):
             'user': '4proxy',
             'database': 'banana_db',
             'password': 'passwordISme',
-            'port': 1234
+            'port': 1234,
         }
         cls._expected_fields: Tuple[str, ...] = (
             TestHelperTool.get_full_name_of_class_private_field(_cls=tested_class,
                                                                 private_field_name='connection_with_database'),
             'dbconfig',
         )
+        cls._execute_query_methods: Tuple[str, ...] = (
+            'execute_query_no_returns',
+            'execute_query_returns_one',
+            'execute_query_returns_all',
+        )
+
+    # ------------------------------------------------------------------------------------------------------------------
+    def setUp(self) -> None:
+        self.mock_MySQLConnection_patch = UnitMock.patch.object(
+            target=tested_module, attribute='MySQLConnection', autospec=True
+        )
+        self.mock_MySQLConnection_class: UnitMock.MagicMock = self.mock_MySQLConnection_patch.start()
+        self.mock_MySQLConnection_instance = UnitMock.MagicMock()
+        self.mock_MySQLConnection_class.return_value = self.mock_MySQLConnection_instance
+
+    # ------------------------------------------------------------------------------------------------------------------
+    def tearDown(self) -> None:
+        self.mock_MySQLConnection_patch.stop()
 
     # ------------------------------------------------------------------------------------------------------------------
     def _create_instance_of_tested_class(self) -> tested_class:
@@ -93,8 +111,7 @@ class TestMySQLDataBaseSingle(unittest.TestCase):
         mock__init__.assert_called_once_with(self=instance, **dbconfig)
 
     # ------------------------------------------------------------------------------------------------------------------
-    @UnitMock.patch.object(target=tested_module, attribute='MySQLConnection', autospec=True)
-    def test_instance_has_expected_fields(self, _) -> None:
+    def test_instance_has_expected_fields(self) -> None:
         # Build
         instance: tested_class = self._create_instance_of_tested_class()
 
@@ -115,17 +132,18 @@ class TestMySQLDataBaseSingle(unittest.TestCase):
         mock_create_new_connection_with_database.assert_called_once()
 
     # ------------------------------------------------------------------------------------------------------------------
-    @UnitMock.patch.object(target=tested_module, attribute='MySQLConnection', autospec=True)
-    def test_method_create_new_connection_with_database_sets_configured_MySQLConnection_to_field_connection_with_database(self,
-                                                                                                                          mock_MySQLConnection: UnitMock.MagicMock) -> None:
+    def test_method_create_new_connection_with_database_sets_configured_MySQLConnection_to_field_connection_with_database(
+            self
+    ) -> None:
         # Build
         _cls = self._tested_class
         expected_dbconfig: Dict[str, Any] = self._dbconfig
-        mock_expected_connection = UnitMock.MagicMock()
-        expected_field: str = TestHelperTool.get_full_name_of_class_private_field(_cls=_cls,
-                                                                                  private_field_name='connection_with_database')
+        expected_field: str = TestHelperTool.get_full_name_of_class_private_field(
+            _cls=_cls, private_field_name='connection_with_database'
+        )
 
-        mock_MySQLConnection.return_value = mock_expected_connection
+        mock_MySQLConnection: UnitMock.MagicMock = self.mock_MySQLConnection_class
+        mock_expected_connection: UnitMock.MagicMock = self.mock_MySQLConnection_instance
 
         # Operate
         instance: tested_class = self._create_instance_of_tested_class()
@@ -145,13 +163,9 @@ class TestMySQLDataBaseSingle(unittest.TestCase):
         )
 
     # ------------------------------------------------------------------------------------------------------------------
-    @UnitMock.patch.object(target=tested_module, attribute='MySQLConnection', autospec=True)
-    def test_method_get_connection_with_database_returns_valid_MySQLConnection(self,
-                                                                               mock_MySQLConnection: UnitMock.MagicMock) -> None:
+    def test_method_get_connection_with_database_returns_valid_MySQLConnection(self) -> None:
         # Build
-        mock_expected_connection = UnitMock.MagicMock()
-
-        mock_MySQLConnection.return_value = mock_expected_connection
+        mock_expected_connection: UnitMock.MagicMock = self.mock_MySQLConnection_instance
 
         # Operate
         instance: tested_class = self._create_instance_of_tested_class()
@@ -170,11 +184,10 @@ class TestMySQLDataBaseSingle(unittest.TestCase):
 
     # ------------------------------------------------------------------------------------------------------------------
     @UnitMock.patch.object(target=tested_class, attribute='get_connection_with_database', autospec=True)
-    @UnitMock.patch.object(target=tested_module, attribute='MySQLConnection', autospec=True)
-    def test_method_close_active_connection_with_database_uses_method_close_of_MySQLConnection(self, _,
+    def test_method_close_active_connection_with_database_uses_method_close_of_MySQLConnection(self,
                                                                                                mock_get_connection_with_database: UnitMock.MagicMock) -> None:
         # Build
-        mock_connection = UnitMock.MagicMock()
+        mock_connection: UnitMock.MagicMock = self.mock_MySQLConnection_instance
 
         mock_get_connection_with_database.return_value = mock_connection
 
@@ -187,3 +200,21 @@ class TestMySQLDataBaseSingle(unittest.TestCase):
         mock_get_connection_with_database.assert_called_once()
 
         mock_connection.close.assert_called_once()
+
+    # ------------------------------------------------------------------------------------------------------------------
+    @UnitMock.patch.object(target=tested_class, attribute='get_connection_with_database', autospec=True)
+    def test_expected_execute_query_methods_uses_method_get_connection_with_database(self,
+                                                                                     mock_get_connection_with_database: UnitMock.MagicMock) -> None:
+        # Build
+        expected_execute_query_methods: Tuple[str, ...] = self._execute_query_methods
+        instance: tested_class = self._create_instance_of_tested_class()
+
+        # Operate
+        for execute_query_method_name in expected_execute_query_methods:
+            mock_get_connection_with_database.reset_mock()
+            with self.subTest(pattern=execute_query_method_name):
+                method: Callable = getattr(instance, execute_query_method_name)
+                method('sql_query')
+
+                # Check
+                mock_get_connection_with_database.assert_called_once()

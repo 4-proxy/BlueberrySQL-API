@@ -4,3 +4,4 @@ __pycache__
 db_connection_config.py
 BlueberrySQL.mdj
 Project_preview_BlueberrySQLAPI.psd
+db_config.py

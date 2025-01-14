@@ -8,7 +8,7 @@ Apache license, version 2.0 (Apache-2.0 license)
 """
 
 __author__ = "4-proxy"
-__version__ = "0.6.0"
+__version__ = "0.7.0"
 
 import unittest
 from unittest import mock as UnitMock
@@ -22,11 +22,16 @@ from abstract.database.sql_database import SQLDataBase
 from abstract.database.connection_interface import SingleConnectionInterface
 from abstract.api.sql_api_interface import SQLAPIInterface
 
-from typing import Callable, Dict, Any, Tuple
+from mysql.connector import MySQLConnection
+from typing import Callable, Dict, Any, List, Tuple
+
+
+# Logical flag: Was MySQL running for testing.
+MYSQL_IS_ON: bool = True
 
 
 # ______________________________________________________________________________________________________________________
-class TestMySQLDataBaseSingle(unittest.TestCase):
+class WithoutMySQLTestMySQLDataBaseSingle(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         super().setUpClass()
@@ -218,3 +223,104 @@ class TestMySQLDataBaseSingle(unittest.TestCase):
 
                 # Check
                 mock_get_connection_with_database.assert_called_once()
+
+
+# ______________________________________________________________________________________________________________________
+@unittest.skipIf(condition=(MYSQL_IS_ON is False),
+                 reason="MySQL server is off or not ready for testing.")
+class WithMySQLTestMySQLDataBaseSingle(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls) -> None:
+        from .test_data.db_config import dbconfig
+
+        super().setUpClass()
+        cls._tested_class = tested_class
+        cls._dbconfig: Dict[str, Any] = dbconfig
+
+    # ------------------------------------------------------------------------------------------------------------------
+    def _create_instance_of_tested_class(self) -> tested_class:
+        _cls = self._tested_class
+        dbconfig: Dict[str, Any] = self._dbconfig
+
+        instance = _cls(**dbconfig)
+
+        return instance
+
+    # ------------------------------------------------------------------------------------------------------------------
+    def test_constructor_successfully_initializes_instance(self) -> None:
+        self._create_instance_of_tested_class()
+
+    # ------------------------------------------------------------------------------------------------------------------
+    def test_method_get_connection_with_database_returns_valid_MySQLConnection_instance(self) -> None:
+        # Build
+        expected_class = MySQLConnection
+        instance: tested_class = self._create_instance_of_tested_class()
+
+        # Operate
+        connection: MySQLConnection = instance.get_connection_with_database()
+
+        # Check
+        self.assertIsInstance(
+            obj=connection,
+            cls=expected_class,
+            msg=f"Failure! Method: *get_connection_with_database* - returns object is not instance of *{expected_class}*!"
+        )
+        self.assertTrue(
+            expr=connection.is_connected(),
+            msg="Failure! Checking the connection status sends a negative response!"
+        )
+
+    # ------------------------------------------------------------------------------------------------------------------
+    def test_method_close_active_connection_with_database_successfully_close_connection_with_database(self) -> None:
+        # Build
+        instance: tested_class = self._create_instance_of_tested_class()
+
+        # Operate
+        connection: MySQLConnection = instance.get_connection_with_database()
+        instance.close_active_connection_with_database()
+
+        # Check
+        self.assertFalse(
+            expr=connection.is_connected(),
+            msg="Failure! Checking the connection status sends a positive response, when a negative was expected!"
+        )
+
+    # ------------------------------------------------------------------------------------------------------------------
+    def test_method_execute_query_no_returns_works_correctly_without_query_data(self) -> None:
+        # Build
+        expected_table_name = 'test_table_1'
+        sql_query_check: str = f"SHOW TABLES LIKE '{expected_table_name}';"
+        sql_query_create: str = f"CREATE TABLE {expected_table_name} (id INT PRIMARY KEY, number INT);"
+        sql_query_drop: str = f"DROP TABLE IF EXISTS {expected_table_name};"
+
+        instance: tested_class = self._create_instance_of_tested_class()
+
+        def table_exists() -> bool:
+            connection: MySQLConnection = instance.get_connection_with_database()
+            with connection.cursor() as cur:
+                cur.execute(operation=sql_query_check)
+                return bool(cur.fetchall())
+
+        # Pre-Check
+        self.assertFalse(
+            expr=table_exists(),
+            msg=f"Failure! The test table: *{expected_table_name}* - is already exists! Test aborted!"
+        )
+
+        # Operate
+        instance.execute_query_no_returns(sql_query=sql_query_create)
+
+        # Check
+        self.assertTrue(
+            expr=table_exists(),
+            msg=f"Failure! Expected table: *{expected_table_name}* - doesn't exist, so the sql query fails!"
+        )
+
+        # Operate
+        instance.execute_query_no_returns(sql_query=sql_query_drop)
+
+        # Check
+        self.assertFalse(
+            expr=table_exists(),
+            msg=f"Failure! Expected table: *{expected_table_name}* - wasn't dropped, so the sql query fails!"
+        )

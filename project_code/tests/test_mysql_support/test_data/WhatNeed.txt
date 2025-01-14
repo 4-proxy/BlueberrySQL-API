@@ -1,0 +1,10 @@
+`db_config.py` - Python file with `dbconfig` variable of type `dict` containing the data to connect to the database.
+
+Example:
+    dbconfig: Dict[str, Any] = {
+        'user': 'root',
+        'password': 'root',
+        'database': 'test_mysql_support_database',
+        'host': '127.0.0.1',
+        'port': 9999,
+    }

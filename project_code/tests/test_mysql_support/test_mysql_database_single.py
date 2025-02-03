@@ -8,7 +8,7 @@ Apache license, version 2.0 (Apache-2.0 license)
 """
 
 __author__ = "4-proxy"
-__version__ = "0.7.0"
+__version__ = "0.8.0"
 
 import unittest
 from unittest import mock as UnitMock
@@ -23,11 +23,13 @@ from abstract.database.connection_interface import SingleConnectionInterface
 from abstract.api.sql_api_interface import SQLAPIInterface
 
 from mysql.connector import MySQLConnection
-from typing import Callable, Dict, Any, List, Tuple
+from typing import Callable, Dict, Any, Tuple
 
 
+# ======================================================================================================================
 # Logical flag: Was MySQL running for testing.
 MYSQL_IS_ON: bool = True
+# ======================================================================================================================
 
 
 # ______________________________________________________________________________________________________________________
@@ -318,6 +320,46 @@ class WithMySQLTestMySQLDataBaseSingle(unittest.TestCase):
 
         # Operate
         instance.execute_query_no_returns(sql_query=sql_query_drop)
+
+        # Check
+        self.assertFalse(
+            expr=table_exists(),
+            msg=f"Failure! Expected table: *{expected_table_name}* - wasn't dropped, so the sql query fails!"
+        )
+
+    # ------------------------------------------------------------------------------------------------------------------
+    def test_method_execute_query_no_returns_works_correctly_with_query_data(self) -> None:
+        # Build
+        expected_table_name = "test_table_2"
+        sql_query_check: str = "SHOW TABLES LIKE %s"
+        sql_query_create: str = "CREATE TABLE %s (id INT PRIMARY KEY, number INT)"
+        sql_query_drop: str = "DROP TABLE IF EXISTS %s"
+
+        instance: tested_class = self._create_instance_of_tested_class()
+
+        def table_exists() -> bool:
+            connection: MySQLConnection = instance.get_connection_with_database()
+            with connection.cursor() as cur:
+                cur.execute(operation=sql_query_check, params=(expected_table_name,))
+                return bool(cur.fetchall())
+
+        # Pre-Check
+        self.assertFalse(
+            expr=table_exists(),
+            msg=f"Failure! The test table: *{expected_table_name}* - is already exists! Test aborted!"
+        )
+
+        # Operate
+        instance.execute_query_no_returns(sql_query=sql_query_create, query_data=(expected_table_name,))
+
+        # Check
+        self.assertTrue(
+            expr=table_exists(),
+            msg=f"Failure! Expected table: *{expected_table_name}* - doesn't exist, so the sql query fails!"
+        )
+
+        # Operate
+        instance.execute_query_no_returns(sql_query=sql_query_drop, query_data=(expected_table_name,))
 
         # Check
         self.assertFalse(

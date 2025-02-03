@@ -12,7 +12,7 @@ __all__: list[str] = [
 ]
 
 __author__ = "4-proxy"
-__version__ = "0.7.0"
+__version__ = "0.8.0"
 
 from mysql.connector.connection import MySQLConnection
 
@@ -20,7 +20,7 @@ from abstract.database.sql_database import SQLDataBase
 from abstract.api.sql_api_interface import SQLAPIInterface
 from abstract.database.connection_interface import SingleConnectionInterface
 
-from typing import Any, Dict, Iterable
+from typing import Any, Dict, Iterable, Optional
 
 
 # ______________________________________________________________________________________________________________________
@@ -50,18 +50,21 @@ class MySQLDataBaseSingle(SQLDataBase, SingleConnectionInterface[MySQLConnection
         active_connection.close()
 
     # ------------------------------------------------------------------------------------------------------------------
-    def execute_query_no_returns(self, sql_query: str, *query_data) -> None:
+    def execute_query_no_returns(self, sql_query: str, query_data: Optional[Iterable] = None) -> None:
         connection: MySQLConnection = self.get_connection_with_database()
 
         with connection.cursor() as cur:
-            cur.execute(operation=sql_query)
+            if query_data:
+                cur.execute(operation=sql_query % query_data)
+            else:
+                cur.execute(operation=sql_query)
 
     # ------------------------------------------------------------------------------------------------------------------
-    def execute_query_returns_one(self, sql_query: str, *query_data) -> Any:
+    def execute_query_returns_one(self, sql_query: str, query_data: Optional[Iterable] = None) -> Any:
         connection: MySQLConnection = self.get_connection_with_database()
 
     # ------------------------------------------------------------------------------------------------------------------
-    def execute_query_returns_all(self, sql_query: str, *query_data) -> Iterable[Any]:
+    def execute_query_returns_all(self, sql_query: str, query_data: Optional[Iterable] = None) -> Iterable[Any]:
         connection: MySQLConnection = self.get_connection_with_database()
 
     # ------------------------------------------------------------------------------------------------------------------

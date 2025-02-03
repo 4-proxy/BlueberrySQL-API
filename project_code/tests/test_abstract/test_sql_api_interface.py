@@ -8,7 +8,7 @@ Apache license, version 2.0 (Apache-2.0 license)
 """
 
 __author__ = "4-proxy"
-__version__ = "0.3.1"
+__version__ = "0.4.0"
 
 import unittest
 
@@ -67,10 +67,11 @@ class TestSQLAPIInterface(unittest.TestCase):
         interface = self._tested_class
         contracts: List[str] = self._expected_contracts_of_interface
 
+        expected_parameter_default_to_None = 'query_data'
         expected_signature_list: List[Tuple[str, Any]] = [
             ('self', Parameter.POSITIONAL_OR_KEYWORD),
             ('sql_query', Parameter.POSITIONAL_OR_KEYWORD),
-            ('query_data', Parameter.VAR_POSITIONAL),
+            ('query_data', Parameter.POSITIONAL_OR_KEYWORD),
         ]  # parameter name, parameter kind
 
         # Check
@@ -80,4 +81,9 @@ class TestSQLAPIInterface(unittest.TestCase):
                     _cls=interface,
                     method_name=contract,
                     expected_signature_list=expected_signature_list
+                )
+                AbstractTestHelper.check_inspected_method_parameter_defaults_to_none(
+                    _cls=interface,
+                    method_name=contract,
+                    parameter_name=expected_parameter_default_to_None
                 )

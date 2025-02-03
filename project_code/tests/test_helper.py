@@ -19,13 +19,13 @@ __all__: list[str] = [
 ]
 
 __author__ = "4-proxy"
-__version__ = "0.6.0"
+__version__ = "0.7.0"
 
 import inspect
 
 from inspect import Signature, Parameter
 from abc import ABC
-from typing import Any, Callable, Iterable, NoReturn, Tuple, List, Type
+from typing import Any, Callable, Iterable, NoReturn, Optional, Tuple, List, Type
 
 
 # ______________________________________________________________________________________________________________________
@@ -211,6 +211,35 @@ class AbstractTestHelper:
                 f"Failure! Signature list of the inspected method: *{method_name}* - not as expected!\n"
                 f"Actual signature list: {actual_signature_list}\n"
                 f"Expected signature list: {expected_signature_list}"
+            )
+
+    # ------------------------------------------------------------------------------------------------------------------
+    @staticmethod
+    def check_inspected_method_parameter_defaults_to_none(_cls: Type,
+                                                          method_name: str,
+                                                          parameter_name: str) -> None:
+        """
+        check_inspected_method_parameter_defaults_to_none checks if the specified parameter defaults to `None`.
+
+        Args:
+            _cls (Type): The class containing the method.
+            method_name (str): The name of the method to inspect.
+            parameter_name (str): The name of the parameter to check.
+
+        Raises:
+            AssertionError: If the parameter does not default to `None`.
+        """
+        # Build
+        method: Callable[..., Any] = getattr(_cls, method_name)
+        signature: Signature = inspect.signature(obj=method)
+
+        # Operate
+        param: Optional[Parameter] = signature.parameters.get(parameter_name)
+
+        # Check
+        if param is None or param.default is not None:
+            raise AssertionError(
+                f"Failure! Inspected parameter: *{parameter_name}* in method *{method_name}* - does not default to *None*!"
             )
 
 

@@ -16,11 +16,11 @@ __all__: list[str] = [
 ]
 
 __author__ = "4-proxy"
-__version__ = "0.3.0"
+__version__ = "0.4.0"
 
 from abc import ABC, abstractmethod
 
-from typing import Any, Iterable
+from typing import Any, Iterable, Optional
 
 
 # ______________________________________________________________________________________________________________________
@@ -38,8 +38,9 @@ class SQLAPIInterface(ABC):
              of abstract classes in Python.
     """
 
+    # ------------------------------------------------------------------------------------------------------------------
     @abstractmethod
-    def execute_query_no_returns(self, sql_query: str, *query_data) -> None:
+    def execute_query_no_returns(self, sql_query: str, query_data: Optional[Iterable] = None) -> None:
         """execute_query_no_returns executes a SQL query that does not return any results.
 
         This abstract method must be implemented by subclasses to execute SQL commands
@@ -49,13 +50,13 @@ class SQLAPIInterface(ABC):
 
         Args:
             sql_query (str): The SQL command to be executed.
-            query_data (tuple): Optional parameters to be used in the SQL command.
+            query_data (Optional[Iterable]): Optional parameters to be used in the SQL command. Defaults to `None`.
         """
         pass
 
     # ------------------------------------------------------------------------------------------------------------------
     @abstractmethod
-    def execute_query_returns_one(self, sql_query: str, *query_data) -> Any:
+    def execute_query_returns_one(self, sql_query: str, query_data: Optional[Iterable] = None) -> Any:
         """execute_query_returns_one executes a SQL query that is expected to return a single result.
 
         This abstract method must be implemented by subclasses to execute SQL queries
@@ -65,7 +66,7 @@ class SQLAPIInterface(ABC):
 
         Args:
             sql_query (str): The SQL command to be executed.
-            query_data (tuple): Optional parameters to be used in the SQL command.
+            query_data (Optional[Iterable]): Optional parameters to be used in the SQL command. Defaults to `None`.
 
         Returns:
             Any: The single result row, or `None` if no results are found.
@@ -74,7 +75,7 @@ class SQLAPIInterface(ABC):
 
     # ------------------------------------------------------------------------------------------------------------------
     @abstractmethod
-    def execute_query_returns_all(self, sql_query: str, *query_data) -> Iterable[Any]:
+    def execute_query_returns_all(self, sql_query: str, query_data: Optional[Iterable] = None) -> Iterable[Any]:
         """execute_query_returns_all executes a SQL query that is expected to return multiple results.
 
         This abstract method must be implemented by subclasses to execute SQL queries
@@ -85,7 +86,7 @@ class SQLAPIInterface(ABC):
 
         Args:
             sql_query (str): The SQL command to be executed.
-            query_data (tuple): Optional parameters to be used in the SQL command.
+            query_data (Optional[Iterable]): Optional parameters to be used in the SQL command. Defaults to `None`.
 
         Returns:
             Iterable[Any]: An iterable collection of result rows, or `None` if no results are found.

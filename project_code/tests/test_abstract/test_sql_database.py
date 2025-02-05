@@ -8,7 +8,7 @@ Apache license, version 2.0 (Apache-2.0 license)
 """
 
 __author__ = "4-proxy"
-__version__ = "0.5.1"
+__version__ = "0.6.0"
 
 import unittest
 
@@ -20,12 +20,15 @@ from typing import Any, Dict, List
 
 
 # ______________________________________________________________________________________________________________________
-class ConcreteTestClass(tested_class):
+class StubClass(tested_class):
     def __str__(self) -> str:
         return "__str__"
 
     def _get_info_about_server(self) -> str:
         return "_get_info_about_server"
+
+    def __del__(self) -> None:
+        pass
 
 
 # ______________________________________________________________________________________________________________________
@@ -45,6 +48,11 @@ class TestSQLDataBase(unittest.TestCase):
                                                                     method_name='__str__')
 
     # ------------------------------------------------------------------------------------------------------------------
+    def test_del_method_is_abstractmethod(self) -> None:
+        AbstractTestHelper.check_inspected_method_is_abstractmethod(_cls=self._tested_class,
+                                                                    method_name='__del__')
+
+    # ------------------------------------------------------------------------------------------------------------------
     def test_get_info_methods_is_abstractmethods(self) -> None:
         # Build
         _class = self._tested_class
@@ -62,7 +70,7 @@ class TestSQLDataBase(unittest.TestCase):
     # ------------------------------------------------------------------------------------------------------------------
     def test_constructor_initializes_private_field_dbconfig(self) -> None:
         # Build
-        _class = ConcreteTestClass
+        _class = StubClass
 
         expected_dbconfig: Dict[str, str] = {
             "host": "localhost",

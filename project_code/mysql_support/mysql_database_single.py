@@ -12,7 +12,7 @@ __all__: list[str] = [
 ]
 
 __author__ = "4-proxy"
-__version__ = "0.8.0"
+__version__ = "0.9.0"
 
 from mysql.connector.connection import MySQLConnection
 
@@ -47,7 +47,8 @@ class MySQLDataBaseSingle(SQLDataBase, SingleConnectionInterface[MySQLConnection
     def close_active_connection_with_database(self) -> None:
         active_connection: MySQLConnection = self.get_connection_with_database()
 
-        active_connection.close()
+        if active_connection is not None:
+            active_connection.close()
 
     # ------------------------------------------------------------------------------------------------------------------
     def execute_query_no_returns(self, sql_query: str, query_data: Optional[Iterable] = None) -> None:
@@ -78,3 +79,7 @@ class MySQLDataBaseSingle(SQLDataBase, SingleConnectionInterface[MySQLConnection
     # ------------------------------------------------------------------------------------------------------------------
     def _get_info_about_connection(self) -> str:
         pass
+
+    # ------------------------------------------------------------------------------------------------------------------
+    def __del__(self) -> None:
+        self.close_active_connection_with_database()

@@ -17,7 +17,7 @@ __all__: list[str] = [
 ]
 
 __author__ = "4-proxy"
-__version__ = "0.5.0"
+__version__ = "0.6.0"
 
 from abc import ABC, abstractmethod
 
@@ -26,7 +26,8 @@ from typing import Dict, Any
 
 # ______________________________________________________________________________________________________________________
 class SQLDataBase(ABC):
-    """SQLDataBase abstract base class for SQL database.
+    """
+    SQLDataBase abstract base class for SQL database.
 
     This class is used as a blueprint for creating specific database classes.
 
@@ -39,8 +40,31 @@ class SQLDataBase(ABC):
              of abstract classes in Python.
     """
 
+    # ------------------------------------------------------------------------------------------------------------------
+    @property
+    def dbconfig(self) -> Dict[str, Any]:
+        return self.__dbconfig
+
+    # ------------------------------------------------------------------------------------------------------------------
+    @dbconfig.setter
+    def dbconfig(self, new_dbconfig: Dict[str, Any]) -> None:
+        """
+        dbconfig setter of the field.
+
+        This setter allows updating the database configuration parameters.
+
+        *It is important to make sure that the active connection method will be disconnected
+        to allow `dbconfig` to be changed.
+
+        Args:
+            new_dbconfig (Dict[str, Any]): A dictionary containing new database configuration parameters.
+        """
+        self.__dbconfig: Dict[str, Any] = new_dbconfig
+
+    # ------------------------------------------------------------------------------------------------------------------
     def __init__(self, **dbconfig) -> None:
-        """__init__ initializes an instance of this class.
+        """
+        __init__ initializes an instance of this class.
 
         This constructor accepts keyword arguments for database configuration,
         which can include parameters such as host, port, user, password, etc.
@@ -54,29 +78,10 @@ class SQLDataBase(ABC):
         self.dbconfig = dbconfig
 
     # ------------------------------------------------------------------------------------------------------------------
-    @property
-    def dbconfig(self) -> Dict[str, Any]:
-        return self.__dbconfig
-
-    # ------------------------------------------------------------------------------------------------------------------
-    @dbconfig.setter
-    def dbconfig(self, new_dbconfig: Dict[str, Any]) -> None:
-        """dbconfig setter of the field.
-
-        This setter allows updating the database configuration parameters.
-
-        *It is important to make sure that the active connection method will be disconnected
-        to allow `dbconfig` to be changed.
-
-        Args:
-            new_dbconfig (Dict[str, Any]): A dictionary containing new database configuration parameters.
-        """
-        self.__dbconfig: Dict[str, Any] = new_dbconfig
-
-    # ------------------------------------------------------------------------------------------------------------------
     @abstractmethod
     def __str__(self) -> str:
-        """__str__ presents an instance of SQLDataBase.
+        """
+        __str__ presents an instance of SQLDataBase.
 
         This abstract method must be implemented in order to display
         complete details about the present object.
@@ -92,7 +97,8 @@ class SQLDataBase(ABC):
     # ------------------------------------------------------------------------------------------------------------------
     @abstractmethod
     def _get_info_about_server(self) -> str:
-        """_get_info_about_server retrieves information about the database server.
+        """
+        _get_info_about_server retrieves information about the database server.
 
         This method must be implemented in derived classes to return
         relevant details about the database server, such as version,
@@ -104,5 +110,26 @@ class SQLDataBase(ABC):
 
         Returns:
             str: Information about the database server.
+        """
+        pass
+
+    # ------------------------------------------------------------------------------------------------------------------
+    @abstractmethod
+    def __del__(self) -> None:
+        """
+        __del__ cleans up database-related processes.
+
+        This abstract method must be implemented to ensure that any active
+        database connections are properly closed when an instance of a derived
+        class is destroyed.
+
+        *It is crucial to release any resources and close connections to prevent
+        potential memory leaks or database locks.
+
+        *Implementations should handle exceptions that may occur during the
+        cleanup process to ensure that the object can terminate gracefully.
+
+        *This method is automatically called when the object is about to be
+        destroyed, so it should not be called directly.
         """
         pass

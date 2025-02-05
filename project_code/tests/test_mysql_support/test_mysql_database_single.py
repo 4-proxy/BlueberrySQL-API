@@ -8,7 +8,7 @@ Apache license, version 2.0 (Apache-2.0 license)
 """
 
 __author__ = "4-proxy"
-__version__ = "0.8.0"
+__version__ = "0.9.0"
 
 import unittest
 from unittest import mock as UnitMock
@@ -225,6 +225,19 @@ class WithoutMySQLTestMySQLDataBaseSingle(unittest.TestCase):
 
                 # Check
                 mock_get_connection_with_database.assert_called_once()
+
+    # ------------------------------------------------------------------------------------------------------------------
+    @UnitMock.patch.object(target=tested_class, attribute='close_active_connection_with_database', autospec=True)
+    def test_destructor_calls_method_close_active_connection_with_database(self,
+                                                                           mock_close_active_connection_with_database: UnitMock.MagicMock) -> None:
+        # Build
+        instance: tested_class = self._create_instance_of_tested_class()
+
+        # Operate
+        del instance
+
+        # Check
+        mock_close_active_connection_with_database.assert_called_once()
 
 
 # ______________________________________________________________________________________________________________________

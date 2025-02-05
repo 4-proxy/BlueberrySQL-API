@@ -19,7 +19,7 @@ __all__: list[str] = [
 ]
 
 __author__ = "4-proxy"
-__version__ = "0.7.0"
+__version__ = "0.7.1"
 
 import inspect
 
@@ -145,12 +145,18 @@ class AbstractTestHelper:
         expected_field = '__isabstractmethod__'
 
         # Operate
-        inspected_method: Callable[..., Any] = getattr(_cls, method_name)
+        try:
+            inspected_method: Callable[..., Any] = getattr(_cls, method_name)
+        except AttributeError:
+            raise AssertionError(
+                f"Failure! The passed class: *{_cls.__qualname__}* - doesn't have inspected method *{method_name}*!"
+            )
 
         # Check
         if not hasattr(inspected_method, expected_field):
             raise AssertionError(
-                f"Failure! Inspected method: *{method_name}* - is exist, but don't have *{expected_field}* field!"
+                f"Failure! Inspected method: *{method_name}* - is exist, but don't have *{expected_field}* field!\n"
+                "So, maybe it's not an abstractmethod!"
             )
 
         if getattr(inspected_method, expected_field) is not True:

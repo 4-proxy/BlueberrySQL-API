@@ -19,13 +19,13 @@ __all__: list[str] = [
 ]
 
 __author__ = "4-proxy"
-__version__ = "0.7.1"
+__version__ = "0.8.0"
 
 import inspect
 
 from inspect import Signature, Parameter
 from abc import ABC
-from typing import Any, Callable, Iterable, NoReturn, Optional, Tuple, List, Type
+from typing import Any, Callable, Generator, Iterable, NoReturn, Optional, Tuple, List, Type
 
 
 # ______________________________________________________________________________________________________________________
@@ -369,3 +369,14 @@ class TestHelperTool:
         full_field_name: str = '_' + _cls.__name__ + field_name
 
         return full_field_name
+
+    # ------------------------------------------------------------------------------------------------------------------
+    @staticmethod
+    def create_incremental_number_generator() -> Generator[int, None, NoReturn]:
+        """
+        description
+        """
+        number = 1
+        while True:
+            yield number
+            number += 1

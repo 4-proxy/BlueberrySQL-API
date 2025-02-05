@@ -12,7 +12,7 @@ __all__: list[str] = [
 ]
 
 __author__ = "4-proxy"
-__version__ = "0.9.0"
+__version__ = "0.9.1"
 
 from mysql.connector.connection import MySQLConnection
 
@@ -56,7 +56,7 @@ class MySQLDataBaseSingle(SQLDataBase, SingleConnectionInterface[MySQLConnection
 
         with connection.cursor() as cur:
             if query_data:
-                cur.execute(operation=sql_query % query_data)
+                cur.execute(operation=sql_query, params=query_data)
             else:
                 cur.execute(operation=sql_query)
 

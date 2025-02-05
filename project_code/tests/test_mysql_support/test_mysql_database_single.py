@@ -8,10 +8,12 @@ Apache license, version 2.0 (Apache-2.0 license)
 """
 
 __author__ = "4-proxy"
-__version__ = "0.9.0"
+__version__ = "0.10.0"
 
 import unittest
 from unittest import mock as UnitMock
+
+import mysql.connector
 
 from tests.test_helper import AbstractTestHelper, TestHelper, TestHelperTool
 
@@ -23,7 +25,7 @@ from abstract.database.connection_interface import SingleConnectionInterface
 from abstract.api.sql_api_interface import SQLAPIInterface
 
 from mysql.connector import MySQLConnection
-from typing import Callable, Dict, Any, Tuple
+from typing import Callable, Dict, Any, Generator, NoReturn, Tuple
 
 
 # ======================================================================================================================
@@ -251,6 +253,8 @@ class WithMySQLTestMySQLDataBaseSingle(unittest.TestCase):
         super().setUpClass()
         cls._tested_class = tested_class
         cls._dbconfig: Dict[str, Any] = dbconfig
+        cls._table_num_generator: Generator[int, None, NoReturn] = TestHelperTool.create_incremental_number_generator()
+        cls._independent_connection_to_db: MySQLConnection = mysql.connector.MySQLConnection(**dbconfig)
 
     # ------------------------------------------------------------------------------------------------------------------
     def _create_instance_of_tested_class(self) -> tested_class:
@@ -260,6 +264,27 @@ class WithMySQLTestMySQLDataBaseSingle(unittest.TestCase):
         instance = _cls(**dbconfig)
 
         return instance
+
+    # ------------------------------------------------------------------------------------------------------------------
+    def _create_test_table_and_return_table_fullname(self) -> str:
+        table_number: int = next(self._table_num_generator)
+
+        table_fullname: str = f'test_table_{table_number}'
+        sql_query: str = f"CREATE TABLE {table_fullname} (id INT PRIMARY KEY, number INT);"
+
+        connection: MySQLConnection = self._independent_connection_to_db
+        with connection.cursor() as cur:
+            cur.execute(operation=sql_query)
+
+        return table_fullname
+
+    # ------------------------------------------------------------------------------------------------------------------
+    def _drop_test_table(self, table_fullname: str) -> None:
+        sql_query: str = f"DROP TABLE IF EXISTS {table_fullname};"
+
+        connection: MySQLConnection = self._independent_connection_to_db
+        with connection.cursor() as cur:
+            cur.execute(operation=sql_query)
 
     # ------------------------------------------------------------------------------------------------------------------
     def test_constructor_successfully_initializes_instance(self) -> None:
@@ -301,81 +326,62 @@ class WithMySQLTestMySQLDataBaseSingle(unittest.TestCase):
         )
 
     # ------------------------------------------------------------------------------------------------------------------
-    def test_method_execute_query_no_returns_works_correctly_without_query_data(self) -> None:
+    def test_execute_query_no_returns_without_query_data(self) -> None:
         # Build
-        expected_table_name = 'test_table_1'
-        sql_query_check: str = f"SHOW TABLES LIKE '{expected_table_name}';"
-        sql_query_create: str = f"CREATE TABLE {expected_table_name} (id INT PRIMARY KEY, number INT);"
-        sql_query_drop: str = f"DROP TABLE IF EXISTS {expected_table_name};"
-
         instance: tested_class = self._create_instance_of_tested_class()
-
-        def table_exists() -> bool:
-            connection: MySQLConnection = instance.get_connection_with_database()
-            with connection.cursor() as cur:
-                cur.execute(operation=sql_query_check)
-                return bool(cur.fetchall())
-
-        # Pre-Check
-        self.assertFalse(
-            expr=table_exists(),
-            msg=f"Failure! The test table: *{expected_table_name}* - is already exists! Test aborted!"
-        )
+        test_table_fullname: str = self._create_test_table_and_return_table_fullname()
+        select_query: str = f"SELECT * FROM {test_table_fullname} WHERE id = 1;"
 
         # Operate
-        instance.execute_query_no_returns(sql_query=sql_query_create)
+        sql_query: str = f"INSERT INTO {test_table_fullname} (id, number) VALUES (1, 100);"
+        instance.execute_query_no_returns(sql_query=sql_query)
 
         # Check
-        self.assertTrue(
-            expr=table_exists(),
-            msg=f"Failure! Expected table: *{expected_table_name}* - doesn't exist, so the sql query fails!"
-        )
+        connection: MySQLConnection = instance.get_connection_with_database()
+        with connection.cursor() as cur:
+            cur.execute(operation=select_query)
+            result = cur.fetchone()
+            self.assertIsNotNone(
+                obj=result,
+                msg="Data insertion failed without query data."
+            )
+            self.assertEqual(
+                first=result,
+                second=(1, 100),
+                msg="Inserted data does not match expected values."
+            )
 
-        # Operate
-        instance.execute_query_no_returns(sql_query=sql_query_drop)
+        del instance
 
-        # Check
-        self.assertFalse(
-            expr=table_exists(),
-            msg=f"Failure! Expected table: *{expected_table_name}* - wasn't dropped, so the sql query fails!"
-        )
+        # End
+        self._drop_test_table(table_fullname=test_table_fullname)
 
     # ------------------------------------------------------------------------------------------------------------------
-    def test_method_execute_query_no_returns_works_correctly_with_query_data(self) -> None:
+    def test_execute_query_no_returns_with_query_data(self) -> None:
         # Build
-        expected_table_name = "test_table_2"
-        sql_query_check: str = "SHOW TABLES LIKE %s"
-        sql_query_create: str = "CREATE TABLE %s (id INT PRIMARY KEY, number INT)"
-        sql_query_drop: str = "DROP TABLE IF EXISTS %s"
-
         instance: tested_class = self._create_instance_of_tested_class()
-
-        def table_exists() -> bool:
-            connection: MySQLConnection = instance.get_connection_with_database()
-            with connection.cursor() as cur:
-                cur.execute(operation=sql_query_check, params=(expected_table_name,))
-                return bool(cur.fetchall())
-
-        # Pre-Check
-        self.assertFalse(
-            expr=table_exists(),
-            msg=f"Failure! The test table: *{expected_table_name}* - is already exists! Test aborted!"
-        )
+        test_table_fullname: str = self._create_test_table_and_return_table_fullname()
+        select_query: str = f"SELECT * FROM {test_table_fullname} WHERE id = 2;"
 
         # Operate
-        instance.execute_query_no_returns(sql_query=sql_query_create, query_data=(expected_table_name,))
+        sql_query: str = f"INSERT INTO {test_table_fullname} (id, number) VALUES (%s, %s);"
+        instance.execute_query_no_returns(sql_query=sql_query, query_data=(2, 200))
 
         # Check
-        self.assertTrue(
-            expr=table_exists(),
-            msg=f"Failure! Expected table: *{expected_table_name}* - doesn't exist, so the sql query fails!"
-        )
+        connection: MySQLConnection = instance.get_connection_with_database()
+        with connection.cursor() as cur:
+            cur.execute(operation=select_query)
+            result = cur.fetchone()
+            self.assertIsNotNone(
+                obj=result, msg="Data insertion failed with query data."
+            )
+            self.assertEqual(
+                first=result,
+                second=(2, 200),
+                msg="Inserted data does not match expected values."
+            )
 
-        # Operate
-        instance.execute_query_no_returns(sql_query=sql_query_drop, query_data=(expected_table_name,))
+        del instance
 
-        # Check
-        self.assertFalse(
-            expr=table_exists(),
-            msg=f"Failure! Expected table: *{expected_table_name}* - wasn't dropped, so the sql query fails!"
-        )
+        # End
+        self._drop_test_table(table_fullname=test_table_fullname)

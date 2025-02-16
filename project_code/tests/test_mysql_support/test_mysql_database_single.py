@@ -8,7 +8,7 @@ Apache license, version 2.0 (Apache-2.0 license)
 """
 
 __author__ = "4-proxy"
-__version__ = "0.10.0"
+__version__ = "0.10.1"
 
 import unittest
 from unittest import mock as UnitMock
@@ -275,6 +275,7 @@ class WithMySQLTestMySQLDataBaseSingle(unittest.TestCase):
         connection: MySQLConnection = self._independent_connection_to_db
         with connection.cursor() as cur:
             cur.execute(operation=sql_query)
+            connection.commit()
 
         return table_fullname
 
@@ -285,6 +286,7 @@ class WithMySQLTestMySQLDataBaseSingle(unittest.TestCase):
         connection: MySQLConnection = self._independent_connection_to_db
         with connection.cursor() as cur:
             cur.execute(operation=sql_query)
+            connection.commit()
 
     # ------------------------------------------------------------------------------------------------------------------
     def test_constructor_successfully_initializes_instance(self) -> None:
@@ -330,28 +332,25 @@ class WithMySQLTestMySQLDataBaseSingle(unittest.TestCase):
         # Build
         instance: tested_class = self._create_instance_of_tested_class()
         test_table_fullname: str = self._create_test_table_and_return_table_fullname()
-        select_query: str = f"SELECT * FROM {test_table_fullname} WHERE id = 1;"
+
+        record_data: Tuple[int, int] = (1, 100)
+        select_query: str = f"SELECT * FROM {test_table_fullname} WHERE id = {record_data[0]};"
 
         # Operate
-        sql_query: str = f"INSERT INTO {test_table_fullname} (id, number) VALUES (1, 100);"
+        sql_query: str = f"INSERT INTO {test_table_fullname} (id, number) VALUES ({record_data[0]}, {record_data[1]});"
         instance.execute_query_no_returns(sql_query=sql_query)
 
         # Check
-        connection: MySQLConnection = instance.get_connection_with_database()
+        connection: MySQLConnection = self._independent_connection_to_db
         with connection.cursor() as cur:
             cur.execute(operation=select_query)
+
             result = cur.fetchone()
+
             self.assertIsNotNone(
                 obj=result,
-                msg="Data insertion failed without query data."
+                msg=f"Failure! Record data: *{record_data}* insertion failed - expected record not found!"
             )
-            self.assertEqual(
-                first=result,
-                second=(1, 100),
-                msg="Inserted data does not match expected values."
-            )
-
-        del instance
 
         # End
         self._drop_test_table(table_fullname=test_table_fullname)
@@ -361,27 +360,25 @@ class WithMySQLTestMySQLDataBaseSingle(unittest.TestCase):
         # Build
         instance: tested_class = self._create_instance_of_tested_class()
         test_table_fullname: str = self._create_test_table_and_return_table_fullname()
-        select_query: str = f"SELECT * FROM {test_table_fullname} WHERE id = 2;"
+
+        record_data: Tuple[int, int] = (1, 200)
+        select_query: str = f"SELECT * FROM {test_table_fullname} WHERE id = {record_data[0]};"
 
         # Operate
         sql_query: str = f"INSERT INTO {test_table_fullname} (id, number) VALUES (%s, %s);"
-        instance.execute_query_no_returns(sql_query=sql_query, query_data=(2, 200))
+        instance.execute_query_no_returns(sql_query=sql_query, query_data=record_data)
 
         # Check
-        connection: MySQLConnection = instance.get_connection_with_database()
+        connection: MySQLConnection = self._independent_connection_to_db
         with connection.cursor() as cur:
             cur.execute(operation=select_query)
-            result = cur.fetchone()
-            self.assertIsNotNone(
-                obj=result, msg="Data insertion failed with query data."
-            )
-            self.assertEqual(
-                first=result,
-                second=(2, 200),
-                msg="Inserted data does not match expected values."
-            )
 
-        del instance
+            result = cur.fetchone()
+
+            self.assertIsNotNone(
+                obj=result,
+                msg=f"Failure! Record data: *{record_data}* insertion failed - expected record not found!"
+            )
 
         # End
         self._drop_test_table(table_fullname=test_table_fullname)

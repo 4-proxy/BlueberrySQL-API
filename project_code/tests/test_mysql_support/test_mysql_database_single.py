@@ -8,7 +8,7 @@ Apache license, version 2.0 (Apache-2.0 license)
 """
 
 __author__ = "4-proxy"
-__version__ = "0.10.1"
+__version__ = "0.11.0"
 
 import unittest
 from unittest import mock as UnitMock
@@ -241,6 +241,17 @@ class WithoutMySQLTestMySQLDataBaseSingle(unittest.TestCase):
         # Check
         mock_close_active_connection_with_database.assert_called_once()
 
+    # ------------------------------------------------------------------------------------------------------------------
+    def test_method_execute_query_no_returns_uses_method_commit_of_MySQLConnection(self) -> None:
+        # Build
+        instance: tested_class = self._create_instance_of_tested_class()
+
+        # Operate
+        instance.execute_query_no_returns("sql query")
+
+        # Check
+        self.mock_MySQLConnection_instance.commit.assert_called_once()
+
 
 # ______________________________________________________________________________________________________________________
 @unittest.skipIf(condition=(MYSQL_IS_ON is False),
@@ -287,6 +298,20 @@ class WithMySQLTestMySQLDataBaseSingle(unittest.TestCase):
         with connection.cursor() as cur:
             cur.execute(operation=sql_query)
             connection.commit()
+
+    # ------------------------------------------------------------------------------------------------------------------
+    def test_autocommit_is_False(self) -> None:
+        # Build
+        instance: tested_class = self._create_instance_of_tested_class()
+
+        # Operate
+        connection: MySQLConnection = instance.get_connection_with_database()
+
+        # Check
+        self.assertFalse(
+            expr=connection.autocommit,
+            msg=f"Failure! Field of *{connection}*: *autocommit* - is not *False*!"
+        )
 
     # ------------------------------------------------------------------------------------------------------------------
     def test_constructor_successfully_initializes_instance(self) -> None:
